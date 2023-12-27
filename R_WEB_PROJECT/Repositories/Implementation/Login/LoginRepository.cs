@@ -1,0 +1,34 @@
+﻿using Microsoft.Data.SqlClient;
+using R_WEB_PROJECT.Models.Login;
+using R_WEB_PROJECT.Repositories.Abstraction.Login;
+using R_WEB_PROJECT.Utilities.Database;
+using R_WEB_PROJECT.Utilities.Log;
+
+namespace R_WEB_PROJECT.Repositories.Implementation.Login
+{
+	public class LoginRepository : ILoginRepository
+	{
+		private readonly DatabaseManager _dbManager;
+
+		public LoginRepository(DatabaseManager dbManager)
+		{
+			_dbManager = dbManager;
+		}
+
+		//아이디, 비밀번호로 계정 존재 여부 확인
+		public async Task<bool> IsAccountByIdPassAsync(AccountModel model)
+		{
+			var query = "SELECT COUNT(*) FROM TB_ACCOUNT WHERE A_ID = @aId AND A_PASSWORD = @aPassword";
+			var parameters = new[]
+			{
+				new SqlParameter("@aId", model.aId),
+				new SqlParameter("@aPassword", model.aPassword)
+			};
+
+			Log.Debug("SQL", SqlPramMapper.MapQuery(query, parameters));
+
+			var result = await _dbManager.GetSingleRecordAsync(query, parameters);
+			return (int)result > 0;
+		}
+	}
+}
