@@ -33,7 +33,7 @@ namespace R_WEB_PROJECT.Controllers.Login
         [HttpPost] // POST 메서드를 통해 폼 데이터를 처리
 		public async Task<IActionResult> LoginAction(AccountModel model)
         {
-			Log.Debug("SYSTEM", "LoginAction");
+			Log.Debug("SYSTEM", "LoginAction.");
 
 			bool isAuthenticated = await _loginService.IsAccountByIdPassAsync(model);
 			Log.Debug("SYSTEM", $"isAuthenticated = {isAuthenticated}");
