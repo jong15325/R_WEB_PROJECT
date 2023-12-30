@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 var serverType = configuration.GetValue<string>("ServerType");
 GlobalContext.Properties["ServerType"] = serverType;
-Log.Info("SYSTEM", $"Server Type: {serverType}");
+Log.Info("SYSTEM", $"Server Type: {serverType}", "Program");
 
 //로그
 //Add log4net as logging provider
@@ -22,7 +22,7 @@ System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Inst
 var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
 XmlConfigurator.Configure(logRepository, new FileInfo(serverType == "real" ? "log4net_real.config" : "log4net_dev.config"));
 var _logger = LogManager.GetLogger(typeof(Program));
-Log.Info("SYSTEM", "Logger registered");
+Log.Info("SYSTEM", "Logger registered", "Program");
 
 //의존성 주입
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -31,7 +31,7 @@ builder.Services.AddRazorPages();
 
 //DB
 var connectionString = configuration.GetConnectionString(serverType == "real" ? "RealConnection" : "DevConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-Log.Info("SYSTEM", $"Database connection string: {connectionString}");
+Log.Info("SYSTEM", $"Database connection string: {connectionString}", "Program");
 builder.Services.AddScoped(provider => new DatabaseManager(connectionString));
 
 //레디스 셋팅
@@ -44,15 +44,15 @@ builder.Services.AddStackExchangeRedisCache(options =>
 
 //서비스 모듈 등록
 ServiceModule.Register(builder.Services);
-Log.Info("SYSTEM", $"ServiceModule registered");
+Log.Info("SYSTEM", $"ServiceModule registered", "Program");
 
 //레포지토리 모듈 등록
 RepositoryModule.Register(builder.Services);
-Log.Info("SYSTEM", $"RepositoryModule registered");
+Log.Info("SYSTEM", $"RepositoryModule registered", "Program");
 
 //레디스 세션 모듈 등록
 RedisSessionModule.Register(builder.Services);
-Log.Info("SYSTEM", $"RedisSessionModule registered");
+Log.Info("SYSTEM", $"RedisSessionModule registered", "Program");
 
 var app = builder.Build();
 
@@ -60,29 +60,29 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
 	app.UseMigrationsEndPoint();
-	Log.Info("SYSTEM", $"Migrations endpoint enabled in Development environment.");
+	Log.Info("SYSTEM", $"Migrations endpoint enabled in Development environment.", "Program");
 }
 else
 {
 	app.UseExceptionHandler("/Error/Error");
-	Log.Info("SYSTEM", $"ExceptionHandler configured for non-Development environment.");
+	Log.Info("SYSTEM", $"ExceptionHandler configured for non-Development environment.", "Program");
 }
-Log.Info("SYSTEM", $"Static files middleware configured.");
+Log.Info("SYSTEM", $"Static files middleware configured.", "Program");
 
 app.UseStaticFiles();
 
 app.UseRouting();
-Log.Info("SYSTEM", $"Routing configured.");
+Log.Info("SYSTEM", $"Routing configured.", "Program");
 
 app.UseAuthorization();
-Log.Info("SYSTEM", $"Authorization enabled.");
+Log.Info("SYSTEM", $"Authorization enabled.", "Program");
 
 app.MapControllerRoute(
 	name: "default",
 	pattern: "{controller=Main}/{action=Main}/{id?}");
-Log.Info("SYSTEM", $"Default controller route configured.");
+Log.Info("SYSTEM", $"Default controller route configured.", "Program");
 
 app.MapRazorPages();
-Log.Info("SYSTEM", $"Razor pages mapped.");
+Log.Info("SYSTEM", $"Razor pages mapped.", "Program");
 
 app.Run();
