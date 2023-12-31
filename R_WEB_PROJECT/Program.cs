@@ -4,8 +4,6 @@ using log4net;
 using System.Reflection;
 using R_WEB_PROJECT.Modules.ServiceModule;
 using R_WEB_PROJECT.Modules.Session;
-using R_WEB_PROJECT.RedisStore.Session;
-using Microsoft.Extensions.DependencyInjection;
 using R_WEB_PROJECT.Utilities.Log;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,6 +51,10 @@ Log.Info("SYSTEM", $"RepositoryModule registered", "Program");
 //레디스 세션 모듈 등록
 RedisSessionModule.Register(builder.Services);
 Log.Info("SYSTEM", $"RedisSessionModule registered", "Program");
+
+//EF 오류 표시
+if(serverType == "dev")
+	builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 var app = builder.Build();
 
