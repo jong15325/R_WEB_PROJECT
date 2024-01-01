@@ -16,10 +16,12 @@ namespace R_WEB_PROJECT.Models.Login
 		[Column("A_PASSWORD")]
 		public string aPassword { get; set; }
 
+		[Column("A_PASSWORD_SALT")]
+		public string aPasswordSalt { get; set; }
+
 		[Column("A_NAME")]
 		public string aName { get; set; }
 
-		[Column("A_PASSWORD_SALT")]
-		public string aPasswordSalt { get; set; }
+		
 	}
 }

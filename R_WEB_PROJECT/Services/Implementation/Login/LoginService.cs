@@ -2,6 +2,7 @@
 using R_WEB_PROJECT.Repositories.Abstraction.Login;
 using R_WEB_PROJECT.Services.Abstraction.Login;
 using R_WEB_PROJECT.Utilities.Log;
+using R_WEB_PROJECT.Utilities.password;
 
 namespace R_WEB_PROJECT.Services.Implementation.Login
 {
@@ -28,6 +29,14 @@ namespace R_WEB_PROJECT.Services.Implementation.Login
 				Log.Debug("SYSTEM", $"Retrieved aPassword = {accountInfo.aPassword}");
 				Log.Debug("SYSTEM", $"Retrieved aName = {accountInfo.aName}");
 				Log.Debug("SYSTEM", $"Retrieved aPasswordSalt = {accountInfo.aPasswordSalt}");
+
+				// 비밀번호 해시값 검증
+				var hashedPassword = PasswordHasher.HashPassword(model.aPassword, accountInfo.aPasswordSalt, false);
+				Console.WriteLine(hashedPassword);
+				if (hashedPassword == accountInfo.aPassword)
+				{
+					isPass = true;
+				}
 			}
 
 			return isPass;
