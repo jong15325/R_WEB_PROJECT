@@ -10,7 +10,7 @@ using System.Reflection;
 namespace R_WEB_PROJECT.Controllers.Login
 {
     public class LoginController : Controller
-    {
+    { 
 		private readonly ILoginService _loginService;
 		private readonly RedisSessionStore _redisSessionStore;
 
