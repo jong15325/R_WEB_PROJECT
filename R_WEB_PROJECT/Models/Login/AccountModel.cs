@@ -5,23 +5,39 @@ namespace R_WEB_PROJECT.Models.Login
 {
 	public class AccountModel
 	{
+		public AccountModel()
+		{
+			idx = 0;
+			UserId = string.Empty;
+			UserPassword = string.Empty;
+			UserPasswordSalt = string.Empty;
+			UserName = string.Empty;
+		}
 
 		[Key]
-		[Column("A_NO")]
-		public int aNo { get; set; }
+		[Required]
+		public int idx { get; set; }
 
-		[Column("A_ID")]
-		public string aId { get; set; }
+		[Required]
+		[StringLength(30)]
+		public string UserId { get; set; }
 
-		[Column("A_PASSWORD")]
-		public string aPassword { get; set; }
+		[Required]
+		[StringLength(50)]
+		public string UserPassword { get; set; }
 
-		[Column("A_PASSWORD_SALT")]
-		public string aPasswordSalt { get; set; }
+		[Required]
+		[StringLength(50)]
+		public string UserPasswordSalt { get; set; }
 
-		[Column("A_NAME")]
-		public string aName { get; set; }
+		[Required]
+		[StringLength(20)]
+		public string UserName { get; set; }
 
-		
+		public override string ToString()
+		{
+			return $"Idx[{idx}], UserId[{UserId}], UserName[{UserName}]";
+		}
+
 	}
 }
