@@ -19,25 +19,28 @@ namespace R_WEB_PROJECT.Services.Implementation.Login
 		//아이디, 비밀번호로 계정 존재 여부 확인 서비스
 		public async Task<bool> IsAccountByIdPassAsync(AccountModel model)
 		{
+			Log.Debug("SYSTEM", "=============================== IsAccountByIdPassAsync Start ===============================");
+
 			bool isPass = false;
 
 			var accountInfo = await _loginRepository.IsAccountByIdPassAsync(model);
 			if (accountInfo != null)
 			{
-				isPass = true;
-				Log.Debug("SYSTEM", $"Retrieved aId = {accountInfo.aId}");
-				Log.Debug("SYSTEM", $"Retrieved aPassword = {accountInfo.aPassword}");
-				Log.Debug("SYSTEM", $"Retrieved aName = {accountInfo.aName}");
-				Log.Debug("SYSTEM", $"Retrieved aPasswordSalt = {accountInfo.aPasswordSalt}");
+				Log.Debug("SYSTEM", $"Retrieved idx = {accountInfo.idx}");
+				Log.Debug("SYSTEM", $"Retrieved UserId = {accountInfo.UserId}");
+				Log.Debug("SYSTEM", $"Retrieved UserName = {accountInfo.UserName}");
 
 				// 비밀번호 해시값 검증
-				var hashedPassword = PasswordHasher.HashPassword(model.aPassword, accountInfo.aPasswordSalt, false);
-				Console.WriteLine(hashedPassword);
-				if (hashedPassword == accountInfo.aPassword)
-				{
+				var hashedPassword = PasswordManager.HashPassword(model.UserPassword, accountInfo.UserPasswordSalt, false);
+				Log.Debug("SECURITY", $"hashedPassword : {hashedPassword}");
+
+				// 비밀번호 검증
+				if (PasswordManager.VerifyPassword(hashedPassword, accountInfo.UserPassword))
 					isPass = true;
-				}
 			}
+
+			Log.Debug("SYSTEM", $"isPass : {isPass}");
+			Log.Debug("SYSTEM", "=============================== IsAccountByIdPassAsync End ===============================");
 
 			return isPass;
 		}
