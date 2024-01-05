@@ -1,5 +1,6 @@
 ﻿using log4net;
 using Microsoft.AspNetCore.Mvc;
+using R_WEB_PROJECT.Controllers.Main;
 using R_WEB_PROJECT.Models.Login;
 using R_WEB_PROJECT.RedisStore.Session;
 using R_WEB_PROJECT.Services.Abstraction.Login;
@@ -22,9 +23,10 @@ namespace R_WEB_PROJECT.Controllers.Login
 
 		//로그인 메인 페이지
 		[Route("/login/main")]
-        public async Task<IActionResult> Login()
+        public IActionResult Login()
         {
-			Log.Debug("SYSTEM", "Login");
+			Log.Debug("SYSTEM", "=============================== Login Start ===============================");
+			Log.Debug("SYSTEM", "=============================== Login End ===============================");
 			return View("login_main");
         }
 
@@ -33,16 +35,17 @@ namespace R_WEB_PROJECT.Controllers.Login
         [HttpPost] // POST 메서드를 통해 폼 데이터를 처리
 		public async Task<IActionResult> LoginAction(AccountModel model)
         {
-			Log.Debug("SYSTEM", "LoginAction Start");
+			Log.Debug("SYSTEM", "=============================== LoginAction Start ===============================");
 
-			//bool isAccountPass = await _loginService.IsAccountByIdPassAsync(model);
 			bool isAccountPass = await _loginService.IsAccountByIdPassAsync(model);
-			Log.Debug("SYSTEM", $"Login Id = {model.aId} / Login Password = {model.aPassword} / isAuthenticated = {isAccountPass}");
+			Log.Debug("SYSTEM", $"Login Id = {model.UserId} / isAuthenticated = {isAccountPass}");
 
 			if (isAccountPass) {
 				await _redisSessionStore.SetSessionAsync("userSession", model, TimeSpan.FromMinutes(30));
-				return RedirectToAction("/login/main");
+				return RedirectToAction(nameof(MainController.Main), "Main");
 			}
+
+			Log.Debug("SYSTEM", "=============================== LoginAction End ===============================");
 
 			return View("login_main"); // 로그인 페이지 다시 표시
 		}
