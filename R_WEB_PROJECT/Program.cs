@@ -27,7 +27,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-//DB
+//DB 셋팅
 var connectionString = configuration.GetConnectionString(serverType == "real" ? "RealConnection" : "DevConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 Log.Info("SYSTEM", $"Database connection string: {connectionString}", "Program");
 builder.Services.AddScoped(provider => new DatabaseManager(connectionString));
@@ -53,7 +53,7 @@ RedisSessionModule.Register(builder.Services);
 Log.Info("SYSTEM", $"RedisSessionModule registered", "Program");
 
 //EF 오류 표시
-if(serverType == "dev")
+//if(serverType == "dev")
 	builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 var app = builder.Build();
