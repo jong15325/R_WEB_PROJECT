@@ -7,6 +7,7 @@ using R_WEB_PROJECT.Services.Abstraction.Login;
 using R_WEB_PROJECT.Utilities.Log;
 using System.Diagnostics;
 using System.Reflection;
+using System.Text.Json;
 
 namespace R_WEB_PROJECT.Controllers.Login
 {
@@ -41,7 +42,7 @@ namespace R_WEB_PROJECT.Controllers.Login
 			Log.Debug("SYSTEM", $"Login Id = {model.UserId} / isAuthenticated = {isAccountPass}");
 
 			if (isAccountPass) {
-				await _redisSessionStore.SetSessionAsync("userSession", model, TimeSpan.FromMinutes(30));
+				await _redisSessionStore.SetSessionAsync("userSession", JsonSerializer.Serialize(model), TimeSpan.FromMinutes(30));
 				return RedirectToAction(nameof(MainController.Main), "Main");
 			}
 

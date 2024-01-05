@@ -37,7 +37,7 @@ var redisConnectionString = builder.Configuration.GetConnectionString(serverType
 builder.Services.AddStackExchangeRedisCache(options =>
 {
 	options.Configuration = redisConnectionString;
-	options.InstanceName = "RWRedisInstance"; // 선택적으로 인스턴스 이름 설정
+	options.InstanceName = "rw_"; // 선택적으로 인스턴스 이름 설정
 });
 
 //서비스 모듈 등록
