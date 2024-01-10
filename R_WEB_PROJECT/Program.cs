@@ -40,6 +40,9 @@ builder.Services.AddStackExchangeRedisCache(options =>
 	options.InstanceName = "rw_"; // 선택적으로 인스턴스 이름 설정
 });
 
+//분산 메모리 캐시
+builder.Services.AddDistributedMemoryCache();
+
 //서비스 모듈 등록
 ServiceModule.Register(builder.Services);
 Log.Info("SYSTEM", $"ServiceModule registered", "Program");
