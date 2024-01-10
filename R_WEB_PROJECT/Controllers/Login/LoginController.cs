@@ -1,6 +1,7 @@
 ﻿using log4net;
 using Microsoft.AspNetCore.Mvc;
 using R_WEB_PROJECT.Controllers.Main;
+using R_WEB_PROJECT.DTOs.Login;
 using R_WEB_PROJECT.Models.Login;
 using R_WEB_PROJECT.RedisStore.Session;
 using R_WEB_PROJECT.Services.Abstraction.Login;
@@ -38,11 +39,12 @@ namespace R_WEB_PROJECT.Controllers.Login
         {
 			Log.Debug("SYSTEM", "=============================== LoginAction Start ===============================");
 
-			bool isAccountPass = await _loginService.IsAccountByIdPassAsync(model);
-			Log.Debug("SYSTEM", $"Login Id = {model.UserId} / isAuthenticated = {isAccountPass}");
+			AccountValidDTO isAccountPass = await _loginService.IsAccountByIdPassAsync(model);
+			Log.Debug("SYSTEM", $"Login Id = {model.UserId} / isAuthenticated = {isAccountPass.IsPass}");
 
-			if (isAccountPass) {
-				await _redisSessionStore.SetSessionAsync("userSession", JsonSerializer.Serialize(model), TimeSpan.FromMinutes(30));
+			if (isAccountPass.IsPass) {
+				await _redisSessionStore.SetSessionAsync("userSession", isAccountPass.AccountInfo, TimeSpan.FromMinutes(30));
+				var retrievedModel = await _redisSessionStore.GetSessionAsync<AccountModel>("userSession");
 				return RedirectToAction(nameof(MainController.Main), "Main");
 			}
 
