@@ -52,6 +52,5 @@ namespace R_WEB_PROJECT.Models.Login
 			return $"Idx[{idx}], UserId[{UserId}], UserName[{UserName}], UserRoleCd[{UserRoleCd}], UserCreateAt[{UserCreateAt}]," +
 				$"UserUpdateAt[{UserUpdateAt}], UserDeleteAt[{UserDeleteAt}]";
 		}
-
 	}
 }

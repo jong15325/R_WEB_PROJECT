@@ -16,7 +16,7 @@ namespace R_WEB_PROJECT.Repositories.Implementation.Login
 		}
 
 		//아이디, 비밀번호로 계정 존재 여부 확인
-		public async Task<AccountModel> IsAccountByIdPassAsync(AccountModel model)
+		public async Task<AccountModel> IsAccountByIdAsync(AccountModel model)
 		{
 			const string query = "SELECT * FROM Account WHERE UserId = @UserId";
 

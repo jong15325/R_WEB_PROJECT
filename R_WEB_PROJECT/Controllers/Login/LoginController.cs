@@ -39,13 +39,20 @@ namespace R_WEB_PROJECT.Controllers.Login
         {
 			Log.Debug("SYSTEM", "=============================== LoginAction Start ===============================");
 
-			AccountValidDTO isAccountPass = await _loginService.IsAccountByIdPassAsync(model);
+			//로그인 후 
+			AccountValidDTO isAccountPass = await _loginService.IsAccountByIdAsync(model);
 			Log.Debug("SYSTEM", $"Login Id = {model.UserId} / isAuthenticated = {isAccountPass.IsPass}");
 
 			if (isAccountPass.IsPass) {
+
 				await _redisSessionStore.SetSessionAsync("userSession", isAccountPass.AccountInfo, TimeSpan.FromMinutes(30));
 				var retrievedModel = await _redisSessionStore.GetSessionAsync<AccountModel>("userSession");
+				Console.WriteLine("redis : " + retrievedModel.UserId);
+
 				return RedirectToAction(nameof(MainController.Main), "Main");
+			} else
+			{
+				//아이디가 존재하지 않거나 비밀번호가 X
 			}
 
 			Log.Debug("SYSTEM", "=============================== LoginAction End ===============================");

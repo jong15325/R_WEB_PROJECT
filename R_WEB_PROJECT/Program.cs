@@ -18,7 +18,8 @@ Log.Info("SYSTEM", $"Server Type: {serverType}", "Program");
 //{0} : 첫번째 매개변수,$ 포함한 {count} 변수 count
 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
-XmlConfigurator.Configure(logRepository, new FileInfo(serverType == "real" ? "log4net_real.config" : "log4net_dev.config"));
+//XmlConfigurator.Configure(logRepository, new FileInfo(serverType == "real" ? "log4net_real.config" : "log4net_dev.config"));
+XmlConfigurator.Configure(logRepository, new FileInfo("log4net_dev.config"));
 var _logger = LogManager.GetLogger(typeof(Program));
 Log.Info("SYSTEM", "Logger registered", "Program");
 

@@ -18,13 +18,13 @@ namespace R_WEB_PROJECT.Services.Implementation.Login
 		}
 
 		//아이디, 비밀번호로 계정 존재 여부 확인 서비스
-		public async Task<AccountValidDTO> IsAccountByIdPassAsync(AccountModel model)
+		public async Task<AccountValidDTO> IsAccountByIdAsync(AccountModel model)
 		{
 			Log.Debug("SYSTEM", "=============================== IsAccountByIdPassAsync Start ===============================");
 
 			bool isPass = false;
 
-			var accountInfo = await _loginRepository.IsAccountByIdPassAsync(model);
+			var accountInfo = await _loginRepository.IsAccountByIdAsync(model);
 			if (accountInfo != null)
 			{
 				Log.Debug("SYSTEM", $"Retrieved idx = {accountInfo.idx}");
@@ -32,7 +32,7 @@ namespace R_WEB_PROJECT.Services.Implementation.Login
 				Log.Debug("SYSTEM", $"Retrieved UserName = {accountInfo.UserName}");
 
 				// 비밀번호 해시값 검증
-				var hashedPassword = PasswordManager.HashPassword(model.UserPassword, accountInfo.UserPasswordSalt, true);
+				var hashedPassword = PasswordManager.HashPassword(model.UserPassword, accountInfo.UserPasswordSalt, false);
 				Log.Debug("SECURITY", $"hashedPassword : {hashedPassword}");
 
 				// 비밀번호 검증

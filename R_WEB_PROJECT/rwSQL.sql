@@ -13,6 +13,6 @@ CREATE TABLE RWEB.dbo.Account (
 	UserName nvarchar(30) COLLATE Korean_Wansung_CI_AS NOT NULL,
 	UserRoleCd nvarchar(20) COLLATE Korean_Wansung_CI_AS NULL,
 	UserCreateAt datetime DEFAULT getdate() NOT NULL,
-	UserUpdateAt datetime DEFAULT getdate() NOT NULL,
+	UserUpdateAt datetime,
 	UserDeleteAt datetime
 );
