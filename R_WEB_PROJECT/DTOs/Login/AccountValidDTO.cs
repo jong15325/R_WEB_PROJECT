@@ -6,5 +6,6 @@ namespace R_WEB_PROJECT.DTOs.Login
 	{
 		public bool IsPass { get; set; }
 		public AccountModel AccountInfo { get; set; }
+		public string Result { get; set; }
 	}
 }

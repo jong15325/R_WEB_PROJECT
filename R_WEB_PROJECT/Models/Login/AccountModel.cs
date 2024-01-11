@@ -7,8 +7,9 @@ namespace R_WEB_PROJECT.Models.Login
 	{
 		public AccountModel()
 		{
-			idx = 0;
+			Idx = 0;
 			UserId = string.Empty;
+			UserType = string.Empty;
 			UserPassword = string.Empty;
 			UserPasswordSalt = string.Empty;
 			UserName = string.Empty;
@@ -18,11 +19,15 @@ namespace R_WEB_PROJECT.Models.Login
 
 		[Key]
 		[Required]
-		public int idx { get; set; }
+		public int Idx { get; set; }
 
 		[Required]
 		[StringLength(50)]
 		public string UserId { get; set; }
+
+		[Required]
+		[StringLength(10)]
+		public string UserType { get; set; }
 
 		[Required]
 		[StringLength(255)]
@@ -49,7 +54,7 @@ namespace R_WEB_PROJECT.Models.Login
 
 		public override string ToString()
 		{
-			return $"Idx[{idx}], UserId[{UserId}], UserName[{UserName}], UserRoleCd[{UserRoleCd}], UserCreateAt[{UserCreateAt}]," +
+			return $"Idx[{Idx}], UserId[{UserId}], UserName[{UserName}], UserRoleCd[{UserRoleCd}], UserCreateAt[{UserCreateAt}]," +
 				$"UserUpdateAt[{UserUpdateAt}], UserDeleteAt[{UserDeleteAt}]";
 		}
 	}

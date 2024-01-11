@@ -1,4 +1,5 @@
 ﻿using log4net;
+using log4net.Util;
 using Microsoft.AspNetCore.Mvc;
 using R_WEB_PROJECT.Controllers.Main;
 using R_WEB_PROJECT.DTOs.Login;
@@ -27,35 +28,63 @@ namespace R_WEB_PROJECT.Controllers.Login
 		[Route("/login/main")]
         public IActionResult Login()
         {
-			Log.Debug("SYSTEM", "=============================== Login Start ===============================");
-			Log.Debug("SYSTEM", "=============================== Login End ===============================");
+			try
+			{
+				Log.Debug("SYSTEM", "=============================== LoginPage Start ===============================");
+				Log.Debug("SYSTEM", "=============================== LoginPage End ===============================");
+			}
+			catch (Exception ex)
+			{
+				Log.Error("SYSTEM", $"An error occurred during login: {ex.Message}", ex);
+			}
+			
 			return View("login_main");
         }
 
 		//로그인 프로세스
         [Route("/login/loginAction")]
         [HttpPost] // POST 메서드를 통해 폼 데이터를 처리
+		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> LoginAction(AccountModel model)
         {
-			Log.Debug("SYSTEM", "=============================== LoginAction Start ===============================");
-
-			//로그인 후 
-			AccountValidDTO isAccountPass = await _loginService.IsAccountByIdAsync(model);
-			Log.Debug("SYSTEM", $"Login Id = {model.UserId} / isAuthenticated = {isAccountPass.IsPass}");
-
-			if (isAccountPass.IsPass) {
-
-				await _redisSessionStore.SetSessionAsync("userSession", isAccountPass.AccountInfo, TimeSpan.FromMinutes(30));
-				var retrievedModel = await _redisSessionStore.GetSessionAsync<AccountModel>("userSession");
-				Console.WriteLine("redis : " + retrievedModel.UserId);
-
-				return RedirectToAction(nameof(MainController.Main), "Main");
-			} else
+			try
 			{
-				//아이디가 존재하지 않거나 비밀번호가 X
-			}
+				Log.Debug("SYSTEM", "=============================== LoginAction Start ===============================");
 
-			Log.Debug("SYSTEM", "=============================== LoginAction End ===============================");
+				//로그인 검증
+				AccountValidDTO isAccountPass = await _loginService.IsAccountByIdAsync(model);
+				Log.Info("SYSTEM", $"로그인 시도 UserId = {model.UserId} / 아이디 검증 결과 = {isAccountPass.IsPass}");
+
+				if (isAccountPass.IsPass)
+				{
+					//레디스 세션 저장
+					await _redisSessionStore.SetSessionAsync($"userSession:{isAccountPass.AccountInfo.Idx}", new AccountModel { 
+						Idx = isAccountPass.AccountInfo.Idx,
+						UserId = isAccountPass.AccountInfo.UserId,
+						UserType = isAccountPass.AccountInfo.UserType,
+						UserName = isAccountPass.AccountInfo.UserName,
+						UserRoleCd = isAccountPass.AccountInfo.UserRoleCd
+
+					}, TimeSpan.FromMinutes(30));
+
+					//레디스 세션 저장 상태 확인
+					var retrievedModel = await _redisSessionStore.GetSessionAsync<AccountModel>($"userSession:{isAccountPass.AccountInfo.Idx}");
+					
+					Log.Info("SYSTEM", $"{isAccountPass.Result} - {isAccountPass.AccountInfo.ToString()}");
+
+					return RedirectToAction(nameof(MainController.Main), "Main");
+				}
+				else
+				{
+					//아이디가 존재하지 않거나 비밀번호가 X
+					Log.Info("SYSTEM", $"{isAccountPass.Result} - {isAccountPass.AccountInfo.ToString()}");
+				}
+
+				Log.Debug("SYSTEM", "=============================== LoginAction End ===============================");
+			} catch (Exception ex) 
+			{
+				Log.Error("SYSTEM", $"An error occurred during login: {ex.Message}", ex);
+			}
 
 			return View("login_main"); // 로그인 페이지 다시 표시
 		}

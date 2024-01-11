@@ -86,6 +86,7 @@
                                 <div class="col-auto fs-10 text-600"><span><a href="../../../pages/authentication/simple/register.html">계정 생성하러 가기</a></span></div>
                             </div>
                             <form action="/login/loginAction" method="POST" id="frm" name="frm">
+                                @Html.AntiForgeryToken()
                                 <div class="mb-3">
                                     <input class="form-control" type="email" name="UserId" placeholder="이메일 주소를 입력해주세요" />
                                 </div>

@@ -4,6 +4,7 @@ using R_WEB_PROJECT.Repositories.Abstraction.Login;
 using R_WEB_PROJECT.Services.Abstraction.Login;
 using R_WEB_PROJECT.Utilities.Log;
 using R_WEB_PROJECT.Utilities.password;
+using static R_WEB_PROJECT.Utilities.Enums.LoginEnum;
 
 namespace R_WEB_PROJECT.Services.Implementation.Login
 {
@@ -23,13 +24,12 @@ namespace R_WEB_PROJECT.Services.Implementation.Login
 			Log.Debug("SYSTEM", "=============================== IsAccountByIdPassAsync Start ===============================");
 
 			bool isPass = false;
+			string result = GetResultMessage(LoginResult.Success);
 
 			var accountInfo = await _loginRepository.IsAccountByIdAsync(model);
 			if (accountInfo != null)
 			{
-				Log.Debug("SYSTEM", $"Retrieved idx = {accountInfo.idx}");
-				Log.Debug("SYSTEM", $"Retrieved UserId = {accountInfo.UserId}");
-				Log.Debug("SYSTEM", $"Retrieved UserName = {accountInfo.UserName}");
+				Log.Debug("SYSTEM", $"Retrieved Idx = {accountInfo.Idx} / Retrieved UserId = {accountInfo.UserId} / Retrieved UserName = {accountInfo.UserName}");
 
 				// 비밀번호 해시값 검증
 				var hashedPassword = PasswordManager.HashPassword(model.UserPassword, accountInfo.UserPasswordSalt, false);
@@ -38,12 +38,16 @@ namespace R_WEB_PROJECT.Services.Implementation.Login
 				// 비밀번호 검증
 				if (PasswordManager.VerifyPassword(hashedPassword, accountInfo.UserPassword))
 					isPass = true;
+				else
+					result = GetResultMessage(LoginResult.PasswordMismatch);
 			}
+			else
+				result = GetResultMessage(LoginResult.NotFound);
 
-			Log.Debug("SYSTEM", $"isPass : {isPass}");
+			Log.Debug("SYSTEM", $"isPass : {isPass} / result : {result}");
 			Log.Debug("SYSTEM", "=============================== IsAccountByIdPassAsync End ===============================");
 
-			return new AccountValidDTO { IsPass = isPass, AccountInfo = accountInfo };
+			return new AccountValidDTO { IsPass = isPass, AccountInfo = accountInfo, Result = result };
 		}
 	}
 }
