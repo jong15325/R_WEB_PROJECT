@@ -75,6 +75,9 @@ else
 }
 Log.Info("SYSTEM", $"Static files middleware configured.", "Program");
 
+//https
+app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
