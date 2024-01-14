@@ -44,7 +44,7 @@ namespace R_WEB_PROJECT.Services.Implementation.Login
 			else
 				result = GetResultMessage(LoginResult.NotFound);
 
-			Log.Debug("SYSTEM", $"isPass : {isPass} / result : {result}");
+			Log.Debug("SYSTEM", $"isPass = {isPass} / result = {result}");
 			Log.Debug("SYSTEM", "=============================== IsAccountByIdPassAsync End ===============================");
 
 			return new AccountValidDTO { IsPass = isPass, AccountInfo = accountInfo, Result = result };

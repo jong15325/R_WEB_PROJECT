@@ -14,7 +14,6 @@ namespace R_WEB_PROJECT.Models.Login
 			UserPasswordSalt = string.Empty;
 			UserName = string.Empty;
 			UserRoleCd = string.Empty;
-			UserCreateAt = DateTime.Now;
 		}
 
 		[Key]
@@ -46,7 +45,7 @@ namespace R_WEB_PROJECT.Models.Login
 		public string UserRoleCd { get; set; }
 
 		[Required]
-		public DateTime UserCreateAt { get; set; }
+		public DateTime? UserCreateAt { get; set; }
 
 		public DateTime? UserUpdateAt { get; set; }
 
