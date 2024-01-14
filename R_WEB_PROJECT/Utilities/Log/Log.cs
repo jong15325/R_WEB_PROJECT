@@ -16,7 +16,7 @@ namespace R_WEB_PROJECT.Utilities.Log
 		public static void Info(string type, string message, params object[] args)
 		{
 			StringBuilder sb = new StringBuilder();
-			sb.Append("[").Append(type).Append("]").Append(message);
+			sb.Append("[").Append(type).Append("] ").Append(message);
 			string resultMsg = sb.ToString();
 
 			if (args != null)
@@ -28,7 +28,7 @@ namespace R_WEB_PROJECT.Utilities.Log
 		public static void Debug(string type, string message, params object[] args)
 		{
 			StringBuilder sb = new StringBuilder();
-			sb.Append("[").Append(type).Append("]").Append(message);
+			sb.Append("[").Append(type).Append("] ").Append(message);
 			string resultMsg = sb.ToString();
 
 			if (args != null)
@@ -40,7 +40,7 @@ namespace R_WEB_PROJECT.Utilities.Log
 		public static void Warn(string type, string message, params object[] args)
 		{
 			StringBuilder sb = new StringBuilder();
-			sb.Append("[").Append(type).Append("]").Append(message);
+			sb.Append("[").Append(type).Append("] ").Append(message);
 			string resultMsg = sb.ToString();
 
 			if (args != null)
@@ -52,7 +52,7 @@ namespace R_WEB_PROJECT.Utilities.Log
 		public static void Error(string type, string message, params object[] args)
 		{
 			StringBuilder sb = new StringBuilder();
-			sb.Append("[").Append(type).Append("]").Append(message);
+			sb.Append("[").Append(type).Append("] ").Append(message);
 			string resultMsg = sb.ToString();
 
 			if (args != null)
@@ -64,7 +64,7 @@ namespace R_WEB_PROJECT.Utilities.Log
 		public static void Fatal(string type, string message, params object[] args)
 		{
 			StringBuilder sb = new StringBuilder();
-			sb.Append("[").Append(type).Append("]").Append(message);
+			sb.Append("[").Append(type).Append("] ").Append(message);
 			string resultMsg = sb.ToString();
 
 			if (args != null)
