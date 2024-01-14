@@ -5,6 +5,8 @@ using System.Reflection;
 using R_WEB_PROJECT.Modules.ServiceModule;
 using R_WEB_PROJECT.Modules.Session;
 using R_WEB_PROJECT.Utilities.Log;
+using Microsoft.Extensions.Localization;
+using R_WEB_PROJECT.Resources;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -29,12 +31,12 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 //DB 셋팅
-var connectionString = configuration.GetConnectionString(serverType == "real" ? "RealConnection" : "DevConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = configuration.GetConnectionString(serverType == "REAL" ? "RealConnection" : "DevConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 Log.Info("SYSTEM", $"Database connection string: {connectionString}", "Program");
 builder.Services.AddScoped(provider => new DatabaseManager(connectionString));
 
 //레디스 셋팅
-var redisConnectionString = builder.Configuration.GetConnectionString(serverType == "real" ? "RealRedisConnection" : "DevRedisConnection");
+var redisConnectionString = builder.Configuration.GetConnectionString(serverType == "REAL" ? "RealRedisConnection" : "DevRedisConnection");
 builder.Services.AddStackExchangeRedisCache(options =>
 {
 	options.Configuration = redisConnectionString;
@@ -56,9 +58,14 @@ Log.Info("SYSTEM", $"RepositoryModule registered", "Program");
 RedisSessionModule.Register(builder.Services);
 Log.Info("SYSTEM", $"RedisSessionModule registered", "Program");
 
+//공통 리소스 등록
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.AddControllersWithViews().AddViewLocalization(); // 로컬라이제이션을 뷰에서 사용하기 위한 설정
+builder.Services.AddSingleton<IStringLocalizer<SharedResource>, StringLocalizer<SharedResource>>();
+
 //EF 오류 표시
 //if(serverType == "dev")
-	builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 var app = builder.Build();
 
