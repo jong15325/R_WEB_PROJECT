@@ -21,22 +21,23 @@ namespace R_WEB_PROJECT.RedisStore.Session
 				AbsoluteExpirationRelativeToNow = expirationTime
 			};
 
-			var serializedValue = JsonSerializer.Serialize(value);
+			string serializedValue = JsonSerializer.Serialize(value);
 			await _distributedCache.SetStringAsync(key, serializedValue, options);
-			Log.Debug("REDIS", $"SET key :{key} / serializedValue = {serializedValue as string}");
-		}
+            Log.Debug("REDIS", string.Format("SET key :{0} / serializedValue = {{{1}}}", key, serializedValue));
+        }
 
-		//세션 불러오기
-		public async Task<T> GetSessionAsync<T>(string key)
+        //세션 불러오기
+        public async Task<T> GetSessionAsync<T>(string key)
 		{
 			var serializedValue = await _distributedCache.GetStringAsync(key);
 			if (serializedValue == null)
 				return default;
 
-			var returnValue = JsonSerializer.Deserialize<T>(serializedValue);
-			Log.Debug("REDIS", $"GET key :{key} / returnValue = {returnValue as string}");
+            Log.Debug("REDIS", string.Format("GET key :{0} / serializedValue = {{{1}}}", key, serializedValue));
 
-			return returnValue;
+            var returnValue = JsonSerializer.Deserialize<T>(serializedValue);
+            
+            return returnValue;
 		}
 
 		//세션 삭제
