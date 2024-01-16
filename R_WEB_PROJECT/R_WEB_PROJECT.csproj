@@ -42,7 +42,6 @@
   <ItemGroup>
     <Folder Include="Repositories\Abstraction\Main\" />
     <Folder Include="Repositories\Implementation\Main\" />
-    <Folder Include="Resources\en\" />
     <Folder Include="Services\Abstraction\Main\" />
     <Folder Include="Services\Implementation\Main\" />
   </ItemGroup>
