@@ -7,13 +7,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Repositories\Migrations\**" />
-    <Compile Remove="Views\Shared\**" />
     <Content Remove="Repositories\Migrations\**" />
-    <Content Remove="Views\Shared\**" />
     <EmbeddedResource Remove="Repositories\Migrations\**" />
-    <EmbeddedResource Remove="Views\Shared\**" />
     <None Remove="Repositories\Migrations\**" />
-    <None Remove="Views\Shared\**" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Repositories\ApplicationDbContext.cs" />
