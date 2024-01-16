@@ -1,11 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Humanizer.Localisation;
+using log4net;
+using log4net.Util;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using R_WEB_PROJECT.Controllers.Main;
 using R_WEB_PROJECT.DTOs.Login;
 using R_WEB_PROJECT.Models.Login;
 using R_WEB_PROJECT.RedisStore.Session;
+using R_WEB_PROJECT.Resources;
 using R_WEB_PROJECT.Services.Abstraction.Login;
 using R_WEB_PROJECT.Utilities.Log;
-using R_WEB_PROJECT.Utilities.Manager;
+using System.Diagnostics;
+using System.Reflection;
+using System.Text.Json;
 
 namespace R_WEB_PROJECT.Controllers.Login
 {
@@ -13,18 +20,18 @@ namespace R_WEB_PROJECT.Controllers.Login
     { 
 		private readonly ILoginService _loginService;
 		private readonly RedisSessionStore _redisSessionStore;
-        private readonly MessageManager _messageManager;
+        private readonly IStringLocalizer<SharedResource> _localizer;
 
-        public LoginController(ILoginService loginService, RedisSessionStore redisSessionStore, MessageManager messageManager)
+        public LoginController(ILoginService loginService, RedisSessionStore redisSessionStore, IStringLocalizer<SharedResource> localizer)
 		{
 			_loginService = loginService;
 			_redisSessionStore = redisSessionStore;
-            _messageManager = messageManager;
+            _localizer = localizer;
         }
 
-        //로그인 메인 페이지
-        [Route("/login/main")]
-        public IActionResult Login(AccountModel model)
+		//로그인 메인 페이지
+		[Route("/login/main")]
+        public IActionResult Login()
         {
 			try
 			{
@@ -36,7 +43,7 @@ namespace R_WEB_PROJECT.Controllers.Login
 				Log.Error("SYSTEM", $"An error occurred during login: {ex.Message}", ex);
 			}
 			
-			return View("login_main", model);
+			return View("login_main");
         }
 
 		//로그인 프로세스
@@ -56,9 +63,9 @@ namespace R_WEB_PROJECT.Controllers.Login
 					Log.Debug("SYSTEM", "=============================== LoginAction End ===============================");
 
 					//로그인 실패 시 아이디 채워주는 용도
-                    TempData["ReturnMessage"] = _messageManager.GetMessage("Login_EnterIdPasswd");
+                    TempData["UserId"] = model.UserId;
 
-                    return View("login_main", model); // 로그인 페이지 다시 표시
+                    return View("login_main"); // 로그인 페이지 다시 표시
 				}
 
 				//로그인 검증
@@ -67,49 +74,39 @@ namespace R_WEB_PROJECT.Controllers.Login
 
 				if (isAccountPass.IsPass)
 				{
-					try
-					{
-                        //레디스 세션 저장
-                        await _redisSessionStore.SetSessionAsync($"userSession:{isAccountPass.AccountInfo.Idx}", new AccountModel
-                        {
-                            Idx = isAccountPass.AccountInfo.Idx,
-                            UserId = isAccountPass.AccountInfo.UserId,
-                            UserType = isAccountPass.AccountInfo.UserType,
-                            UserName = isAccountPass.AccountInfo.UserName,
-                            UserRoleCd = isAccountPass.AccountInfo.UserRoleCd
+					//레디스 세션 저장
+					await _redisSessionStore.SetSessionAsync($"userSession:{isAccountPass.AccountInfo.Idx}", new AccountModel { 
+						Idx = isAccountPass.AccountInfo.Idx,
+						UserId = isAccountPass.AccountInfo.UserId,
+						UserType = isAccountPass.AccountInfo.UserType,
+						UserName = isAccountPass.AccountInfo.UserName,
+						UserRoleCd = isAccountPass.AccountInfo.UserRoleCd
 
-                        }, TimeSpan.FromMinutes(30));
-                    }
-					catch (Exception ex)
-					{
-                        Log.Error("REDIS", $"An error occurred while saving the Redis session : {ex.Message}", ex);
+					}, TimeSpan.FromMinutes(30));
 
-                        //반환 데이터
-                        TempData["ReturnMessage"] = _messageManager.GetMessage("Login_Error");
-                    }
+					//레디스 세션 저장 상태 확인
+					var retrievedModel = await _redisSessionStore.GetSessionAsync<AccountModel>($"userSession:{isAccountPass.AccountInfo.Idx}");
+					
+					Log.Info("SYSTEM", $"{isAccountPass.Result} - {isAccountPass.AccountInfo.ToString()}");
+					Log.Debug("SYSTEM", "=============================== LoginAction End ===============================");
 
-                    Log.Info("SYSTEM", $"{isAccountPass.Result} - {isAccountPass.AccountInfo.ToString()}");
-                    Log.Debug("SYSTEM", "=============================== LoginAction End ===============================");
-
-                    return RedirectToAction(nameof(MainController.Main), "Main");
-                }
+					return RedirectToAction(nameof(MainController.Main), "Main");
+				}
 
 				//아이디가 존재하지 않거나 비밀번호가 존재하지 않을 경우
 				Log.Info("SYSTEM", $"{isAccountPass.Result} - {model.ToString()}");
-
-                //반환 데이터
-                ViewData["ReturnMessage"] = _messageManager.GetMessage("Login_Invaild");
-                ViewBag.AlertMessage = _messageManager.GetMessage("Login_Invaild");
-
             }
             catch (Exception ex) 
 			{
 				Log.Error("SYSTEM", $"An error occurred during login: {ex.Message}", ex);
-            }
+			}
 
             Log.Debug("SYSTEM", "=============================== LoginAction End ===============================");
 
-            return View("login_main", model); // 로그인 페이지 다시 표시
-        }
-    }
+            //로그인 실패 시 아이디 채워주는 용도
+            TempData["UserId"] = model.UserId;
+
+            return View("login_main"); // 로그인 페이지 다시 표시
+		}
+	}
 }

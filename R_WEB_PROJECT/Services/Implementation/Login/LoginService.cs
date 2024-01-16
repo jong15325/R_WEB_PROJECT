@@ -29,6 +29,8 @@ namespace R_WEB_PROJECT.Services.Implementation.Login
 			var accountInfo = await _loginRepository.IsAccountByIdAsync(model);
 			if (accountInfo != null)
 			{
+				Log.Debug("SYSTEM", $"Retrieved Idx = {accountInfo.Idx} / Retrieved UserId = {accountInfo.UserId} / Retrieved UserName = {accountInfo.UserName}");
+
 				// 비밀번호 해시값 검증
 				var hashedPassword = PasswordManager.HashPassword(model.UserPassword, accountInfo.UserPasswordSalt, false);
 				Log.Debug("SECURITY", $"hashedPassword : {hashedPassword}");
@@ -42,6 +44,7 @@ namespace R_WEB_PROJECT.Services.Implementation.Login
 			else
 				result = GetResultMessage(LoginResult.NotFound);
 
+			Log.Debug("SYSTEM", $"isPass = {isPass} / result = {result}");
 			Log.Debug("SYSTEM", "=============================== IsAccountByIdPassAsync End ===============================");
 
 			return new AccountValidDTO { IsPass = isPass, AccountInfo = accountInfo, Result = result };
