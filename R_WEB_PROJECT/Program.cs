@@ -5,8 +5,9 @@ using System.Reflection;
 using R_WEB_PROJECT.Modules.ServiceModule;
 using R_WEB_PROJECT.Modules.Session;
 using R_WEB_PROJECT.Utilities.Log;
-using Microsoft.Extensions.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using R_WEB_PROJECT.Resources;
+using R_WEB_PROJECT.Utilities.Manager;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -59,9 +60,14 @@ RedisSessionModule.Register(builder.Services);
 Log.Info("SYSTEM", $"RedisSessionModule registered", "Program");
 
 //공통 리소스 등록
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-builder.Services.AddControllersWithViews().AddViewLocalization(); // 로컬라이제이션을 뷰에서 사용하기 위한 설정
-builder.Services.AddSingleton<IStringLocalizer<SharedResource>, StringLocalizer<SharedResource>>();
+//builder.Services.AddLocalization(options => options.ResourcesPath = "Resources"); -> 리소스 폴더가 상위라서 적용하면 안댐
+builder.Services.AddMvc().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization(options =>
+{
+	options.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(SharedResource));
+});
+
+//리소스 메세지 매니저 싱글톤 등록
+builder.Services.AddSingleton<MessageManager>();
 
 //EF 오류 표시
 //if(serverType == "dev")
