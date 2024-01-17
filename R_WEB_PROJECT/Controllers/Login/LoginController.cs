@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using R_WEB_PROJECT.Controllers.Main;
-using R_WEB_PROJECT.DTOs.Login;
-using R_WEB_PROJECT.Models.Login;
+using R_WEB_PROJECT.DTOs;
+using R_WEB_PROJECT.Models;
 using R_WEB_PROJECT.RedisStore.Session;
 using R_WEB_PROJECT.Services.Abstraction.Login;
 using R_WEB_PROJECT.Utilities.Log;
 using R_WEB_PROJECT.Utilities.Manager;
+using static R_WEB_PROJECT.Utilities.Enums.AlertEnum;
 
 namespace R_WEB_PROJECT.Controllers.Login
 {
@@ -55,9 +56,7 @@ namespace R_WEB_PROJECT.Controllers.Login
 					Log.Warn("SYSTEM", "아이디 또는 비밀번호를 입력하지 않고 로그인을 시도했습니다.");
 					Log.Debug("SYSTEM", "=============================== LoginAction End ===============================");
 
-					//로그인 실패 시 아이디 채워주는 용도
-                    TempData["ReturnMessage"] = _messageManager.GetMessage("Login_EnterIdPasswd");
-
+                    AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_EnterIdPasswd"), AlertIconType.warning);
                     return View("login_main", model); // 로그인 페이지 다시 표시
 				}
 
@@ -83,33 +82,29 @@ namespace R_WEB_PROJECT.Controllers.Login
 					catch (Exception ex)
 					{
                         Log.Error("REDIS", $"An error occurred while saving the Redis session : {ex.Message}", ex);
-
-                        //반환 데이터
-                        TempData["ReturnMessage"] = _messageManager.GetMessage("Login_Error");
+                        AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Error"), AlertIconType.error);
                     }
 
                     Log.Info("SYSTEM", $"{isAccountPass.Result} - {isAccountPass.AccountInfo.ToString()}");
                     Log.Debug("SYSTEM", "=============================== LoginAction End ===============================");
 
+                    AlertManager.MixinAlert(this, _messageManager.GetMessage("Login_Success"), "", AlertIconType.success);
                     return RedirectToAction(nameof(MainController.Main), "Main");
                 }
 
 				//아이디가 존재하지 않거나 비밀번호가 존재하지 않을 경우
 				Log.Info("SYSTEM", $"{isAccountPass.Result} - {model.ToString()}");
-
-                //반환 데이터
-                ViewData["ReturnMessage"] = _messageManager.GetMessage("Login_Invaild");
-                ViewBag.AlertMessage = _messageManager.GetMessage("Login_Invaild");
-
             }
             catch (Exception ex) 
 			{
 				Log.Error("SYSTEM", $"An error occurred during login: {ex.Message}", ex);
+                AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Error"), AlertIconType.error);
             }
 
             Log.Debug("SYSTEM", "=============================== LoginAction End ===============================");
 
-            return View("login_main", model); // 로그인 페이지 다시 표시
+            AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Invaild"), AlertIconType.warning);
+            return RedirectToAction(nameof(Login), "Login");
         }
     }
 }
