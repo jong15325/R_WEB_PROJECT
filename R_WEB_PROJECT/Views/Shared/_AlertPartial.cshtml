@@ -1,7 +1,84 @@
 ﻿@{
-    var returnMessage = TempData["ReturnMessage"] as string;
+    var alertMessage = TempData["AlertMessage"] as string;
+    Console.WriteLine(alertMessage);
 }
 
-@if (!string.IsNullOrEmpty(returnMessage))
+@if (alertMessage != null)
 {
+    <script>
+        /*
+            [Description("Basic")]
+            Basic,
+
+            [Description("Confirm")]
+            Confirm,
+
+            [Description("Timer")]
+            Timer,
+
+            [Description("Mixin")]
+            Mixin,
+        */
+
+        var alert = JSON.parse('@Html.Raw(alertMessage)');
+        console.log(alert);
+        switch (alert.AlertType) {
+            case 'Basic': 
+                {
+                    Swal.fire({
+                        title: alert.Title,
+                        text: alert.Message,
+                        icon: alert.AlertIconType
+                    });
+                    break;
+                }
+            case 'Confirm':
+                {
+                    Swal.fire({
+                        title: alert.Title,
+                        text: alert.Message,
+                        icon: alert.AlertIconType
+                    });
+                    break;
+                }
+            case 'Timer':
+                {
+                    Swal.fire({
+                        title: alert.Title,
+                        text: alert.Message,
+                        icon: alert.AlertIconType
+                    });
+                    break;
+                }
+            case 'Mixin':
+                {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                            toast.style.fontSize = "13px"; // 텍스트 크기 조절
+                        }
+                    });
+                    Toast.fire({
+                        icon: alert.AlertIconType,
+                        title: alert.Title,
+                    });
+                    break;
+                }
+            default:
+                {
+                    Swal.fire({
+                        title: alert.Title,
+                        text: alert.Message,
+                        icon: alert.AlertIconType
+                    });
+                    break;
+                }
+        }
+    </script>
 }

@@ -4,19 +4,37 @@ namespace R_WEB_PROJECT.Utilities.Enums
 {
     public class AlertEnum
     {
+        public enum AlertIconType
+        {
+            [Description("success")]
+            success,
+
+            [Description("error")]
+            error,
+
+            [Description("warning")]
+            warning,
+
+            [Description("info")]
+            info,
+
+            [Description("question")]
+            question,
+        }
+
         public enum AlertType
         {
-            [Description("Error")]
-            Error,
+            [Description("Basic")]
+            Basic,
 
-            [Description("Scuccess")]
-            Scuccess,
+            [Description("Confirm")]
+            Confirm,
 
-            [Description("Warning")]
-            Warning,
+            [Description("Timer")]
+            Timer,
 
-            [Description("Info")]
-            Info,
+            [Description("Mixin")]
+            Mixin,
         }
     }
 }
