@@ -127,7 +127,7 @@
     <value>로그인에 실패하였습니다.</value>
   </data>
   <data name="Login_Invaild" xml:space="preserve">
-    <value>아이디 또는 비밀번호가 잘못되었습니다. 다시 확인해주세요.</value>
+    <value>아이디 또는 비밀번호가 잘못되었습니다.</value>
   </data>
   <data name="Login_Lock" xml:space="preserve">
     <value>잠긴 계정입니다.</value>
