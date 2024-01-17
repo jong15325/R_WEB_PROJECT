@@ -1,23 +1,28 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <!-- ===============================================-->
     <!--    Document Title-->
     <!-- ===============================================-->
-    <title>Falcon | Dashboard &amp; Web App Template</title>
+    <title>R-PROJECT</title>
     <meta name="msapplication-TileImage" content="../../../assets/img/favicons/mstile-150x150.png">
     <meta name="theme-color" content="#ffffff">
 
-    @await Html.PartialAsync("_CommonScriptsPartial")
-
 </head>
 <body>
-    @await Html.PartialAsync("_AlertPartial")
+    @await Html.PartialAsync("_CommonLinksPartial")
 
     @RenderBody()
 
-    @await Html.PartialAsync("_CommonLinksPartial")
+    @await Html.PartialAsync("_CommonScriptsPartial")
 
+    @await Html.PartialAsync("_AlertPartial")<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>
         var isRTL = JSON.parse(localStorage.getItem('isRTL'));
         if (isRTL) {
@@ -33,15 +38,5 @@
             userLinkRTL.setAttribute('disabled', true);
         }
     </script>
-
-    @if (!string.IsNullOrEmpty(ViewBag.AlertMessage))
-    {
-        <script>
-            // JavaScript로 알림 창 표시
-            var decodedMessage = new DOMParser().parseFromString("@Html.Raw(ViewBag.AlertMessage)", "text/html").body.textContent;
-            alert(decodedMessage);
-
-        </script>
-    }
 </body>
 </html>
