@@ -1,4 +1,4 @@
-﻿using R_WEB_PROJECT.Models.Login;
+﻿using R_WEB_PROJECT.Models;
 using R_WEB_PROJECT.Repositories.Abstraction.Login;
 using R_WEB_PROJECT.Utilities.Database;
 using R_WEB_PROJECT.Utilities.Log;
@@ -6,7 +6,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace R_WEB_PROJECT.Repositories.Implementation.Login
 {
-	public class LoginRepository : ILoginRepository
+    public class LoginRepository : ILoginRepository
 	{
 		private readonly DatabaseManager _dbManager;
 

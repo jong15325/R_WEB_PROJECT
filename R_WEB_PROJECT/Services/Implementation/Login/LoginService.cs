@@ -1,5 +1,5 @@
-﻿using R_WEB_PROJECT.DTOs.Login;
-using R_WEB_PROJECT.Models.Login;
+﻿using R_WEB_PROJECT.DTOs;
+using R_WEB_PROJECT.Models;
 using R_WEB_PROJECT.Repositories.Abstraction.Login;
 using R_WEB_PROJECT.Services.Abstraction.Login;
 using R_WEB_PROJECT.Utilities.Log;
