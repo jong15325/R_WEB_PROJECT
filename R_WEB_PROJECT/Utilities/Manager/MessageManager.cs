@@ -13,6 +13,7 @@ namespace R_WEB_PROJECT.Utilities.Manager
             _localizer = localizer;
         }
 
+        //Resource 메세지 가져온다
         public string GetMessage(string messageKey)
         {
             return _localizer[messageKey];

@@ -57,8 +57,8 @@ namespace R_WEB_PROJECT.Controllers.Login
 					Log.Debug("SYSTEM", "=============================== LoginAction End ===============================");
 
                     AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_EnterIdPasswd"), AlertIconType.warning);
-                    return View("login_main", model); // 로그인 페이지 다시 표시
-				}
+                    return RedirectToAction(nameof(Login), "Login");
+                }
 
 				//로그인 검증
 				AccountValidDTO isAccountPass = await _loginService.IsAccountByIdAsync(model);
@@ -83,6 +83,7 @@ namespace R_WEB_PROJECT.Controllers.Login
 					{
                         Log.Error("REDIS", $"An error occurred while saving the Redis session : {ex.Message}", ex);
                         AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Error"), AlertIconType.error);
+                        return RedirectToAction(nameof(Login), "Login");
                     }
 
                     Log.Info("SYSTEM", $"{isAccountPass.Result} - {isAccountPass.AccountInfo.ToString()}");
@@ -98,13 +99,17 @@ namespace R_WEB_PROJECT.Controllers.Login
             catch (Exception ex) 
 			{
 				Log.Error("SYSTEM", $"An error occurred during login: {ex.Message}", ex);
+
+                //입력 데이터 설정
                 AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Error"), AlertIconType.error);
+                return RedirectToAction(nameof(Login), "Login", new AccountModel { UserId = model.UserId });
             }
 
             Log.Debug("SYSTEM", "=============================== LoginAction End ===============================");
 
+            //입력 데이터 설정
             AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Invaild"), AlertIconType.warning);
-            return RedirectToAction(nameof(Login), "Login");
+            return RedirectToAction(nameof(Login), "Login", new AccountModel { UserId = model.UserId });
         }
     }
 }
