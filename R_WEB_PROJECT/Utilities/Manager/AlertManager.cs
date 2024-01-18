@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using R_WEB_PROJECT.DTOs;
-using R_WEB_PROJECT.Models;
+using R_WEB_PROJECT.Models.Alert;
 using R_WEB_PROJECT.Utilities.Enums;
 using static R_WEB_PROJECT.Utilities.Enums.AlertEnum;
 

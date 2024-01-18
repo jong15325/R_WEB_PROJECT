@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace R_WEB_PROJECT.Models
+namespace R_WEB_PROJECT.Models.Alert
 {
     public class AlertModel
     {

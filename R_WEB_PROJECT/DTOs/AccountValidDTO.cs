@@ -1,4 +1,4 @@
-﻿using R_WEB_PROJECT.Models;
+﻿using R_WEB_PROJECT.Models.User;
 
 namespace R_WEB_PROJECT.DTOs
 {

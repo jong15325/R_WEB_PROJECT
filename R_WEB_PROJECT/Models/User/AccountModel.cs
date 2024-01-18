@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace R_WEB_PROJECT.Models
+namespace R_WEB_PROJECT.Models.User
 {
     public class AccountModel
     {

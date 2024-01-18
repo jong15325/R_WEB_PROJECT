@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using R_WEB_PROJECT.Controllers.Main;
 using R_WEB_PROJECT.DTOs;
-using R_WEB_PROJECT.Models;
+using R_WEB_PROJECT.Models.User;
 using R_WEB_PROJECT.Services.Abstraction.Login;
 using R_WEB_PROJECT.Utilities.Log;
 using R_WEB_PROJECT.Utilities.Manager;
-using R_WEB_PROJECT.Utilities.Redis.Session;
+using R_WEB_PROJECT.Utilities.Redis;
 using static R_WEB_PROJECT.Utilities.Enums.AlertEnum;
 
 namespace R_WEB_PROJECT.Controllers.Login
@@ -13,10 +13,10 @@ namespace R_WEB_PROJECT.Controllers.Login
     public class LoginController : Controller
     { 
 		private readonly ILoginService _loginService;
-		private readonly RedisSessionStore _redisSessionStore;
+		private readonly RedisManager _redisSessionStore;
         private readonly MessageManager _messageManager;
 
-        public LoginController(ILoginService loginService, RedisSessionStore redisSessionStore, MessageManager messageManager)
+        public LoginController(ILoginService loginService, RedisManager redisSessionStore, MessageManager messageManager)
 		{
 			_loginService = loginService;
 			_redisSessionStore = redisSessionStore;
@@ -69,7 +69,7 @@ namespace R_WEB_PROJECT.Controllers.Login
 					try
 					{
                         //레디스 세션 저장
-                        await _redisSessionStore.SetSessionAsync($"userSession:{isAccountPass.AccountInfo.Idx}", new AccountModel
+                        await _redisSessionStore.SetRedisAsync($"userSession:{isAccountPass.AccountInfo.Idx}", new AccountModel
                         {
                             Idx = isAccountPass.AccountInfo.Idx,
                             UserId = isAccountPass.AccountInfo.UserId,

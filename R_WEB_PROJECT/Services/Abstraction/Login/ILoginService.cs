@@ -1,5 +1,5 @@
 ﻿using R_WEB_PROJECT.DTOs;
-using R_WEB_PROJECT.Models;
+using R_WEB_PROJECT.Models.User;
 using System.Data;
 
 namespace R_WEB_PROJECT.Services.Abstraction.Login
