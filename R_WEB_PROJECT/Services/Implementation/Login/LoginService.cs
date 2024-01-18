@@ -21,30 +21,37 @@ namespace R_WEB_PROJECT.Services.Implementation.Login
 		//아이디, 비밀번호로 계정 존재 여부 확인 서비스
 		public async Task<AccountValidDTO> IsAccountByIdAsync(AccountModel model)
 		{
-			Log.Debug("SYSTEM", "=============================== IsAccountByIdPassAsync Start ===============================");
-
-			bool isPass = false;
-			string result = GetResultMessage(LoginResult.Success);
-
-			var accountInfo = await _loginRepository.IsAccountByIdAsync(model);
-			if (accountInfo != null)
+			try
 			{
-				// 비밀번호 해시값 검증
-				var hashedPassword = PasswordManager.HashPassword(model.UserPassword, accountInfo.UserPasswordSalt, false);
-				Log.Debug("SECURITY", $"hashedPassword : {hashedPassword}");
+                Log.Debug("SYSTEM", "=============================== IsAccountByIdPassAsync Start ===============================");
 
-				// 비밀번호 검증
-				if (PasswordManager.VerifyPassword(hashedPassword, accountInfo.UserPassword))
-					isPass = true;
-				else
-					result = GetResultMessage(LoginResult.PasswordMismatch);
-			}
-			else
-				result = GetResultMessage(LoginResult.NotFound);
+                bool isPass = false;
+                string result = GetResultMessage(LoginResult.Success);
 
-			Log.Debug("SYSTEM", "=============================== IsAccountByIdPassAsync End ===============================");
+                var accountInfo = await _loginRepository.IsAccountByIdAsync(model);
+                if (accountInfo != null)
+                {
+                    // 비밀번호 해시값 검증
+                    var hashedPassword = PasswordManager.HashPassword(model.UserPassword, accountInfo.UserPasswordSalt, false);
+                    Log.Debug("SECURITY", $"hashedPassword : {hashedPassword}");
 
-			return new AccountValidDTO { IsPass = isPass, AccountInfo = accountInfo, Result = result };
+                    // 비밀번호 검증
+                    if (PasswordManager.VerifyPassword(hashedPassword, accountInfo.UserPassword))
+                        isPass = true;
+                    else
+                        result = GetResultMessage(LoginResult.PasswordMismatch);
+                }
+                else
+                    result = GetResultMessage(LoginResult.NotFound);
+
+                Log.Debug("SYSTEM", "=============================== IsAccountByIdPassAsync End ===============================");
+
+                return new AccountValidDTO { IsPass = isPass, AccountInfo = accountInfo, Result = result };
+            }
+			catch (Exception ex) {
+                Log.Error("SYSTEM", $"An error occurred during IsAccountByIdAsync Service : {ex.GetType().Name} - {ex.Message}", ex);
+                throw;
+            }
 		}
 	}
 }

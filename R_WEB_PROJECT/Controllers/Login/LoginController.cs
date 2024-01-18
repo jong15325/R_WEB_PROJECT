@@ -2,10 +2,10 @@
 using R_WEB_PROJECT.Controllers.Main;
 using R_WEB_PROJECT.DTOs;
 using R_WEB_PROJECT.Models;
-using R_WEB_PROJECT.RedisStore.Session;
 using R_WEB_PROJECT.Services.Abstraction.Login;
 using R_WEB_PROJECT.Utilities.Log;
 using R_WEB_PROJECT.Utilities.Manager;
+using R_WEB_PROJECT.Utilities.Redis.Session;
 using static R_WEB_PROJECT.Utilities.Enums.AlertEnum;
 
 namespace R_WEB_PROJECT.Controllers.Login
@@ -81,7 +81,7 @@ namespace R_WEB_PROJECT.Controllers.Login
                     }
 					catch (Exception ex)
 					{
-                        Log.Error("REDIS", $"An error occurred while saving the Redis session : {ex.Message}", ex);
+                        Log.Error("REDIS", $"An error occurred while saving the Redis session : {ex.GetType().Name} - {ex.Message}", ex);
                         AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Error"), AlertIconType.error);
                         return RedirectToAction(nameof(Login), "Login");
                     }
@@ -98,7 +98,7 @@ namespace R_WEB_PROJECT.Controllers.Login
             }
             catch (Exception ex) 
 			{
-				Log.Error("SYSTEM", $"An error occurred during login: {ex.Message}", ex);
+				Log.Error("SYSTEM", $"An error occurred during login : {ex.GetType().Name} - {ex.Message}", ex);
 
                 //입력 데이터 설정
                 AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Error"), AlertIconType.error);

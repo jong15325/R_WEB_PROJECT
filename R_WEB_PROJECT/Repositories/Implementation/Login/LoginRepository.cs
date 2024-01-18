@@ -23,9 +23,20 @@ namespace R_WEB_PROJECT.Repositories.Implementation.Login
 			object parameters = new { UserId = model.UserId };
 			Log.Debug("SQL", SqlParamMapper.MapQuery(query, parameters));
 
-			AccountModel result = await _dbManager.GetSingleRecordAsync<AccountModel>(query, parameters);
+			try
+            {
+                AccountModel result = await _dbManager.GetSingleRecordAsync<AccountModel>(query, parameters);
 
-			return result;
+                return result;
+            }
+            catch (Exception ex) 
+			{
+                Log.Error("SYSTEM", $"An error occurred during IsAccountByIdAsync Repository : {ex.GetType().Name} - {ex.Message}", ex);
+                throw;
+            }
+
+
+			
 		}
 	}
 }

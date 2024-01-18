@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
-using R_WEB_PROJECT.RedisStore.Session;
 using R_WEB_PROJECT.Services.Abstraction.Login;
 using R_WEB_PROJECT.Services.Implementation.Login;
+using R_WEB_PROJECT.Utilities.Redis.Session;
 
 namespace R_WEB_PROJECT.Modules.Session
 {
-	public static class RedisSessionModule
+    public static class RedisSessionModule
 	{
 		public static void Register(IServiceCollection services)
 		{

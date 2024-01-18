@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Identity;
-using R_WEB_PROJECT.Utilities.Enums;
-using R_WEB_PROJECT.Utilities.Generator;
-using R_WEB_PROJECT.Utilities.Log;
+﻿using R_WEB_PROJECT.Utilities.Generator;
 using System.Text;
 
 namespace R_WEB_PROJECT.Utilities.password

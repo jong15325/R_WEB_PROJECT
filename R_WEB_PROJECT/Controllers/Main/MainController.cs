@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using R_WEB_PROJECT.Models;
-using R_WEB_PROJECT.RedisStore.Session;
 using R_WEB_PROJECT.Services.Abstraction.Login;
 using R_WEB_PROJECT.Utilities.Log;
 using R_WEB_PROJECT.Utilities.Manager;
+using R_WEB_PROJECT.Utilities.Redis.Session;
 using static R_WEB_PROJECT.Utilities.Enums.AlertEnum;
 
 namespace R_WEB_PROJECT.Controllers.Main
