@@ -41,6 +41,7 @@
     <Folder Include="Repositories\Implementation\Main\" />
     <Folder Include="Services\Abstraction\Main\" />
     <Folder Include="Services\Implementation\Main\" />
+    <Folder Include="Services\Implementation\Log\" />
   </ItemGroup>
 
 </Project>
