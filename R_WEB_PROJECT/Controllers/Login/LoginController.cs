@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using R_WEB_PROJECT.Controllers.Main;
 using R_WEB_PROJECT.DTOs;
+using R_WEB_PROJECT.Models.Log;
 using R_WEB_PROJECT.Models.User;
 using R_WEB_PROJECT.Services.Abstraction.Login;
 using R_WEB_PROJECT.Utilities.Log;
@@ -85,6 +86,9 @@ namespace R_WEB_PROJECT.Controllers.Login
                         AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Error"), AlertIconType.error);
                         return RedirectToAction(nameof(Login), "Login");
                     }
+
+                    //로그인 이력 저장
+                    LogLoginModel
 
                     Log.Info("SYSTEM", $"{isAccountPass.Result} - {isAccountPass.AccountInfo.ToString()}");
                     Log.Debug("SYSTEM", "=============================== LoginAction End ===============================");
