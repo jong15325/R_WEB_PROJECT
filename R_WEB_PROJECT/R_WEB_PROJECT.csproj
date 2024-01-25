@@ -37,11 +37,6 @@
 
   <ItemGroup>
     <Folder Include="Models\Redis\" />
-    <Folder Include="Repositories\Abstraction\Main\" />
-    <Folder Include="Repositories\Implementation\Main\" />
-    <Folder Include="Services\Abstraction\Main\" />
-    <Folder Include="Services\Implementation\Main\" />
-    <Folder Include="Services\Implementation\Log\" />
   </ItemGroup>
 
 </Project>

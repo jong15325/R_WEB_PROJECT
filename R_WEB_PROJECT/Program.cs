@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 var serverType = configuration.GetValue<string>("ServerType");
 GlobalContext.Properties["ServerType"] = serverType;
-Log.Info("SYSTEM", $"Server Type: {serverType}", "Program");
+LogUtil.Info("SYSTEM", $"Server Type: {serverType}", "Program");
 
 //로그
 //Add log4net as logging provider
@@ -24,7 +24,7 @@ var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
 //XmlConfigurator.Configure(logRepository, new FileInfo(serverType == "real" ? "log4net_real.config" : "log4net_dev.config"));
 XmlConfigurator.Configure(logRepository, new FileInfo("log4net_dev.config"));
 var _logger = LogManager.GetLogger(typeof(Program));
-Log.Info("SYSTEM", "Logger registered", "Program");
+LogUtil.Info("SYSTEM", "Logger registered", "Program");
 
 //의존성 주입
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -33,7 +33,7 @@ builder.Services.AddRazorPages();
 
 //DB 셋팅
 var connectionString = configuration.GetConnectionString(serverType == "REAL" ? "RealConnection" : "DevConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-Log.Info("SYSTEM", $"Database connection string: {connectionString}", "Program");
+LogUtil.Info("SYSTEM", $"Database connection string: {connectionString}", "Program");
 builder.Services.AddScoped(provider => new DatabaseManager(connectionString));
 
 //레디스 셋팅
@@ -48,16 +48,16 @@ builder.Services.AddStackExchangeRedisCache(options =>
 builder.Services.AddDistributedMemoryCache();
 
 //서비스 모듈 등록
-ServiceModule.Register(builder.Services);
-Log.Info("SYSTEM", $"ServiceModule registered", "Program");
+//ServiceModule.Register(builder.Services);
+LogUtil.Info("SYSTEM", $"ServiceModule registered", "Program");
 
 //레포지토리 모듈 등록
 RepositoryModule.Register(builder.Services);
-Log.Info("SYSTEM", $"RepositoryModule registered", "Program");
+LogUtil.Info("SYSTEM", $"RepositoryModule registered", "Program");
 
 //레디스 세션 모듈 등록
 RedisSessionModule.Register(builder.Services);
-Log.Info("SYSTEM", $"RedisSessionModule registered", "Program");
+LogUtil.Info("SYSTEM", $"RedisSessionModule registered", "Program");
 
 //공통 리소스 등록
 //builder.Services.AddLocalization(options => options.ResourcesPath = "Resources"); -> 리소스 폴더가 상위라서 적용하면 안댐
@@ -79,14 +79,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
 	app.UseMigrationsEndPoint();
-	Log.Info("SYSTEM", $"Migrations endpoint enabled in Development environment.", "Program");
+	LogUtil.Info("SYSTEM", $"Migrations endpoint enabled in Development environment.", "Program");
 }
 else
 {
 	app.UseExceptionHandler("/Error/Error");
-	Log.Info("SYSTEM", $"ExceptionHandler configured for non-Development environment.", "Program");
+	LogUtil.Info("SYSTEM", $"ExceptionHandler configured for non-Development environment.", "Program");
 }
-Log.Info("SYSTEM", $"Static files middleware configured.", "Program");
+LogUtil.Info("SYSTEM", $"Static files middleware configured.", "Program");
 
 //https
 app.UseHttpsRedirection();
@@ -94,17 +94,17 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-Log.Info("SYSTEM", $"Routing configured.", "Program");
+LogUtil.Info("SYSTEM", $"Routing configured.", "Program");
 
 app.UseAuthorization();
-Log.Info("SYSTEM", $"Authorization enabled.", "Program");
+LogUtil.Info("SYSTEM", $"Authorization enabled.", "Program");
 
 app.MapControllerRoute(
 	name: "default",
 	pattern: "{controller=Main}/{action=Main}/{id?}");
-Log.Info("SYSTEM", $"Default controller route configured.", "Program");
+LogUtil.Info("SYSTEM", $"Default controller route configured.", "Program");
 
 app.MapRazorPages();
-Log.Info("SYSTEM", $"Razor pages mapped.", "Program");
+LogUtil.Info("SYSTEM", $"Razor pages mapped.", "Program");
 
 app.Run();
