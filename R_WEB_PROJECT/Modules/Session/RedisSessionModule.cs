@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
-using R_WEB_PROJECT.Services.Abstraction.Login;
-using R_WEB_PROJECT.Services.Implementation.Login;
-using R_WEB_PROJECT.Utilities.Redis;
+﻿using R_WEB_PROJECT.Utilities.Redis;
 
 namespace R_WEB_PROJECT.Modules.Session
 {

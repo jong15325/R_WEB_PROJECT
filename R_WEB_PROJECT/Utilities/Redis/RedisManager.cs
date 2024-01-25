@@ -22,7 +22,7 @@ namespace R_WEB_PROJECT.Utilities.Redis
 
             string serializedValue = JsonSerializer.Serialize(value);
             await _distributedCache.SetStringAsync(key, serializedValue, options);
-            Log.Log.Debug("REDIS", string.Format("SET key :{0} / serializedValue = {{{1}}}", key, serializedValue));
+            Log.LogUtil.Debug("REDIS", string.Format("SET key :{0} / serializedValue = {{{1}}}", key, serializedValue));
         }
 
         //세션 불러오기
@@ -32,7 +32,7 @@ namespace R_WEB_PROJECT.Utilities.Redis
             if (serializedValue == null)
                 return default;
 
-            Log.Log.Debug("REDIS", string.Format("GET key :{0} / serializedValue = {{{1}}}", key, serializedValue));
+            Log.LogUtil.Debug("REDIS", string.Format("GET key :{0} / serializedValue = {{{1}}}", key, serializedValue));
 
             var returnValue = JsonSerializer.Deserialize<T>(serializedValue);
 

@@ -7,14 +7,14 @@ namespace R_WEB_PROJECT.Utilities.password
 	{
 		public static string HashPassword(string inputPassword, string UserStoreSalt, bool isCreate)
 		{
-			Log.Log.Debug("SECUTIRY", $"inputPassword = {inputPassword} / UserStoreSalt = {UserStoreSalt} / isCreate = {isCreate}");
+			Log.LogUtil.Debug("SECUTIRY", $"inputPassword = {inputPassword} / UserStoreSalt = {UserStoreSalt} / isCreate = {isCreate}");
 
 			string salt = UserStoreSalt;
 
 			if (isCreate) 
 			{
 				salt = SaltGenerator.GenerateRandomSalt(32);
-				Log.Log.Debug("SECUTIRY", $"New Salt = {salt}");
+				Log.LogUtil.Debug("SECUTIRY", $"New Salt = {salt}");
 			}
 
 			using (var sha256 = System.Security.Cryptography.SHA256.Create())
