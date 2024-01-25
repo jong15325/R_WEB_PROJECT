@@ -1,6 +1,4 @@
 ﻿using R_WEB_PROJECT.Models.Log;
-using R_WEB_PROJECT.Models.User;
-using R_WEB_PROJECT.Repositories.Abstraction.Login;
 using R_WEB_PROJECT.Utilities.Database;
 using R_WEB_PROJECT.Utilities.Log;
 

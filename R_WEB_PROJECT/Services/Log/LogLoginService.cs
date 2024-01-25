@@ -1,9 +1,6 @@
-﻿using R_WEB_PROJECT.DTOs;
-using R_WEB_PROJECT.Models.Log;
-using R_WEB_PROJECT.Repositories.Abstraction.Login;
-using R_WEB_PROJECT.Services.Abstraction.Log;
+﻿using R_WEB_PROJECT.Models.Log;
+using R_WEB_PROJECT.Repositories.Log;
 using R_WEB_PROJECT.Utilities.Log;
-using R_WEB_PROJECT.Utilities.password;
 using static R_WEB_PROJECT.Utilities.Enums.LoginEnum;
 
 namespace R_WEB_PROJECT.Services.Log
