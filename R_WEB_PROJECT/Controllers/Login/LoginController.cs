@@ -18,13 +18,16 @@ namespace R_WEB_PROJECT.Controllers.Login
         private readonly ILogLoginService _logLoginService;
         private readonly RedisManager _redisSessionStore;
         private readonly MessageManager _messageManager;
+        private readonly UserInfoManager _userInfoManager;
 
-        public LoginController(ILoginService loginService, ILogLoginService logLoginService, RedisManager redisSessionStore, MessageManager messageManager)
+        public LoginController(ILoginService loginService, ILogLoginService logLoginService, 
+            RedisManager redisSessionStore, MessageManager messageManager, UserInfoManager userInfoManager)
 		{
 			_loginService = loginService;
             _logLoginService = logLoginService;
             _redisSessionStore = redisSessionStore;
             _messageManager = messageManager;
+            _userInfoManager = userInfoManager;
         }
 
         //로그인 메인 페이지
@@ -60,6 +63,15 @@ namespace R_WEB_PROJECT.Controllers.Login
 					LogUtil.Warn("SYSTEM", "아이디 또는 비밀번호를 입력하지 않고 로그인을 시도했습니다.");
 					LogUtil.Debug("SYSTEM", "=============================== LoginAction End ===============================");
 
+                    //로그인 이력 저장
+                    await _logLoginService.InsertLogLoginAsync(new LogLoginModel
+                    {
+                        LoginUserId = model.UserId,
+                        LoginIp = _userInfoManager.GetUserIPAddress(),
+                        LoginAgent = _userInfoManager.GetUserAgent(),
+                        LoginStatus = _messageManager.GetMessage("Login_EnterIdPasswd")
+                    });
+
                     AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_EnterIdPasswd"), AlertIconType.warning);
                     return RedirectToAction(nameof(Login), "Login");
                 }
@@ -86,15 +98,31 @@ namespace R_WEB_PROJECT.Controllers.Login
 					catch (Exception ex)
 					{
                         LogUtil.Error("REDIS", $"An error occurred while saving the Redis session : {ex.GetType().Name} - {ex.Message}", ex);
+
+                        //로그인 이력 저장
+                        await _logLoginService.InsertLogLoginAsync(new LogLoginModel
+                        {
+                            LoginUserId = isAccountPass.AccountInfo.UserId,
+                            LoginIp = _userInfoManager.GetUserIPAddress(),
+                            LoginAgent = _userInfoManager.GetUserAgent(),
+                            LoginStatus = _messageManager.GetMessage("Login_Error")
+                        });
+
                         AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Error"), AlertIconType.error);
                         return RedirectToAction(nameof(Login), "Login");
                     }
 
-                    //로그인 이력 저장
-                    await _logLoginService.InsertLogLoginAsync(new LogLoginModel { });
-
                     LogUtil.Info("SYSTEM", $"{isAccountPass.Result} - {isAccountPass.AccountInfo.ToString()}");
                     LogUtil.Debug("SYSTEM", "=============================== LoginAction End ===============================");
+
+                    //로그인 이력 저장
+                    await _logLoginService.InsertLogLoginAsync(new LogLoginModel
+                    {
+                        LoginUserId = isAccountPass.AccountInfo.UserId,
+                        LoginIp = _userInfoManager.GetUserIPAddress(),
+                        LoginAgent = _userInfoManager.GetUserAgent(),
+                        LoginStatus = _messageManager.GetMessage("Login_Success")
+                    });
 
                     AlertManager.MixinAlert(this, _messageManager.GetMessage("Login_Success"), "", AlertIconType.success);
                     return RedirectToAction(nameof(MainController.Main), "Main");
@@ -107,11 +135,29 @@ namespace R_WEB_PROJECT.Controllers.Login
 			{
 				LogUtil.Error("SYSTEM", $"An error occurred during login : {ex.GetType().Name} - {ex.Message}", ex);
 
+                //로그인 이력 저장
+                await _logLoginService.InsertLogLoginAsync(new LogLoginModel
+                {
+                    LoginUserId = model.UserId,
+                    LoginIp = _userInfoManager.GetUserIPAddress(),
+                    LoginAgent = _userInfoManager.GetUserAgent(),
+                    LoginStatus = _messageManager.GetMessage("Login_Error")
+                });
+
                 AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Error"), AlertIconType.error);
                 return RedirectToAction(nameof(Login), "Login", new AccountModel { UserId = model.UserId });
             }
 
             LogUtil.Debug("SYSTEM", "=============================== LoginAction End ===============================");
+
+            //로그인 이력 저장
+            await _logLoginService.InsertLogLoginAsync(new LogLoginModel
+            {
+                LoginUserId = model.UserId,
+                LoginIp = _userInfoManager.GetUserIPAddress(),
+                LoginAgent = _userInfoManager.GetUserAgent(),
+                LoginStatus = _messageManager.GetMessage("Login_Invaild")
+            });
 
             AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Invaild"), AlertIconType.warning);
             return RedirectToAction(nameof(Login), "Login", new AccountModel { UserId = model.UserId });

@@ -8,6 +8,7 @@ using R_WEB_PROJECT.Utilities.Log;
 using Microsoft.AspNetCore.Mvc.Razor;
 using R_WEB_PROJECT.Resources;
 using R_WEB_PROJECT.Utilities.Manager;
+using R_WEB_PROJECT.Modules.Manager;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -48,7 +49,7 @@ builder.Services.AddStackExchangeRedisCache(options =>
 builder.Services.AddDistributedMemoryCache();
 
 //서비스 모듈 등록
-//ServiceModule.Register(builder.Services);
+ServiceModule.Register(builder.Services);
 LogUtil.Info("SYSTEM", $"ServiceModule registered", "Program");
 
 //레포지토리 모듈 등록
@@ -59,6 +60,10 @@ LogUtil.Info("SYSTEM", $"RepositoryModule registered", "Program");
 RedisSessionModule.Register(builder.Services);
 LogUtil.Info("SYSTEM", $"RedisSessionModule registered", "Program");
 
+//매니저 모듈 등록
+ManagerModule.Register(builder.Services);
+LogUtil.Info("SYSTEM", $"ManagerModule registered", "Program");
+
 //공통 리소스 등록
 //builder.Services.AddLocalization(options => options.ResourcesPath = "Resources"); -> 리소스 폴더가 상위라서 적용하면 안댐
 builder.Services.AddMvc().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization(options =>
@@ -66,12 +71,11 @@ builder.Services.AddMvc().AddViewLocalization(LanguageViewLocationExpanderFormat
 	options.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(SharedResource));
 });
 
-//리소스 메세지 매니저 싱글톤 등록
-builder.Services.AddSingleton<MessageManager>();
-
 //EF 오류 표시
 //if(serverType == "dev")
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
