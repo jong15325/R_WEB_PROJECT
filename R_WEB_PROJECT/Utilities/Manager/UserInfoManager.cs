@@ -11,8 +11,12 @@
 
         public string GetUserIPAddress()
         {
-            string? ipAddress = _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
-            return ipAddress;
+            var ipAddress = _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress;
+            if (ipAddress != null && ipAddress.IsIPv4MappedToIPv6)
+            {
+                ipAddress = ipAddress.MapToIPv4();
+            }
+            return ipAddress.ToString();
         }
 
         public string GetUserAgent()

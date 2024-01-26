@@ -32,19 +32,25 @@ namespace R_WEB_PROJECT.Controllers.Login
 
         //로그인 메인 페이지
         [Route("/login/main")]
-        public IActionResult Login(AccountModel model)
+        public IActionResult Login()
         {
-			try
-			{
-				LogUtil.Debug("SYSTEM", "=============================== LoginPage Start ===============================");
-				LogUtil.Debug("SYSTEM", "=============================== LoginPage End ===============================");
+            var model = new AccountModel();
+
+            try
+            {
+                LogUtil.Debug("SYSTEM", "=============================== LoginPage Start ===============================");
+
+                if (TempData.ContainsKey("ReModel"))
+                    model = TempData["ReModel"] as AccountModel;
 			}
 			catch (Exception ex)
 			{
 				LogUtil.Error("SYSTEM", $"An error occurred during login: {ex.Message}", ex);
 			}
-			
-			return View("login_main", model);
+
+            LogUtil.Debug("SYSTEM", "=============================== LoginPage End ===============================");
+
+            return View("login_main", model);
         }
 
 		//로그인 프로세스
@@ -73,6 +79,7 @@ namespace R_WEB_PROJECT.Controllers.Login
                     });
 
                     AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_EnterIdPasswd"), AlertIconType.warning);
+                    TempData["ReModel"] = model;
                     return RedirectToAction(nameof(Login), "Login");
                 }
 
@@ -109,6 +116,7 @@ namespace R_WEB_PROJECT.Controllers.Login
                         });
 
                         AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Error"), AlertIconType.error);
+                        TempData["ReModel"] = model;
                         return RedirectToAction(nameof(Login), "Login");
                     }
 
@@ -125,6 +133,7 @@ namespace R_WEB_PROJECT.Controllers.Login
                     });
 
                     AlertManager.MixinAlert(this, _messageManager.GetMessage("Login_Success"), "", AlertIconType.success);
+                    TempData["ReModel"] = model;
                     return RedirectToAction(nameof(MainController.Main), "Main");
                 }
 
@@ -145,7 +154,8 @@ namespace R_WEB_PROJECT.Controllers.Login
                 });
 
                 AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Error"), AlertIconType.error);
-                return RedirectToAction(nameof(Login), "Login", new AccountModel { UserId = model.UserId });
+                TempData["ReModel"] = model;
+                return RedirectToAction(nameof(Login), "Login");
             }
 
             LogUtil.Debug("SYSTEM", "=============================== LoginAction End ===============================");
@@ -160,7 +170,8 @@ namespace R_WEB_PROJECT.Controllers.Login
             });
 
             AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Invaild"), AlertIconType.warning);
-            return RedirectToAction(nameof(Login), "Login", new AccountModel { UserId = model.UserId });
+            TempData["ReModel"] = model;
+            return RedirectToAction(nameof(Login), "Login");
         }
     }
 }
