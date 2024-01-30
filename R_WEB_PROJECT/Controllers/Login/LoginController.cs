@@ -1,14 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using R_WEB_PROJECT.Controllers.Main;
 using R_WEB_PROJECT.DTOs;
+using R_WEB_PROJECT.Models.Alert;
 using R_WEB_PROJECT.Models.Log;
 using R_WEB_PROJECT.Models.User;
 using R_WEB_PROJECT.Services.Log;
 using R_WEB_PROJECT.Services.Login;
+using R_WEB_PROJECT.Utilities.Data;
+using R_WEB_PROJECT.Utilities.Enums;
 using R_WEB_PROJECT.Utilities.Log;
 using R_WEB_PROJECT.Utilities.Manager;
 using R_WEB_PROJECT.Utilities.Redis;
+using System.Text.Json;
 using static R_WEB_PROJECT.Utilities.Enums.AlertEnum;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace R_WEB_PROJECT.Controllers.Login
 {
@@ -34,23 +39,21 @@ namespace R_WEB_PROJECT.Controllers.Login
         [Route("/login/main")]
         public IActionResult Login()
         {
-            var model = new AccountModel();
-
             try
             {
                 LogUtil.Debug("SYSTEM", "=============================== LoginPage Start ===============================");
-
-                if (TempData.ContainsKey("ReModel"))
-                    model = TempData["ReModel"] as AccountModel;
-			}
-			catch (Exception ex)
+                var model = TempDataUtil.TempDataGet<AccountModel>(this, "AccountModel") ?? new AccountModel();
+                return View("login_main", model);
+            }
+            catch (Exception ex)
 			{
 				LogUtil.Error("SYSTEM", $"An error occurred during login: {ex.Message}", ex);
-			}
-
-            LogUtil.Debug("SYSTEM", "=============================== LoginPage End ===============================");
-
-            return View("login_main", model);
+                return RedirectToAction(nameof(Error), "Error");
+            }
+            finally
+            {
+                LogUtil.Debug("SYSTEM", "=============================== LoginPage End ===============================");
+            }
         }
 
 		//로그인 프로세스
@@ -59,38 +62,30 @@ namespace R_WEB_PROJECT.Controllers.Login
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> LoginAction(AccountModel model)
         {
-			try
-			{
-				LogUtil.Debug("SYSTEM", "=============================== LoginAction Start ===============================");
+            var resultData = new ResultDataDTO("Login_Success", model, AlertIconType.SUCCESS, false);
 
-				if (string.IsNullOrEmpty(model.UserId) || string.IsNullOrEmpty(model.UserPassword))
-				{
-					// UserId 또는 UserPassword가 비어있는 경우 처리
-					LogUtil.Warn("SYSTEM", "아이디 또는 비밀번호를 입력하지 않고 로그인을 시도했습니다.");
-					LogUtil.Debug("SYSTEM", "=============================== LoginAction End ===============================");
+            try
+            {
+                LogUtil.Debug("SYSTEM", "=============================== LoginAction Start ===============================");
 
-                    //로그인 이력 저장
-                    await _logLoginService.InsertLogLoginAsync(new LogLoginModel
-                    {
-                        LoginUserId = model.UserId,
-                        LoginIp = _userInfoManager.GetUserIPAddress(),
-                        LoginAgent = _userInfoManager.GetUserAgent(),
-                        LoginStatus = _messageManager.GetMessage("Login_EnterIdPasswd")
-                    });
+                if (string.IsNullOrEmpty(model.UserId) || string.IsNullOrEmpty(model.UserPassword))
+                {
+                    // UserId 또는 UserPassword가 비어있는 경우 처리
+                    LogUtil.Warn("SYSTEM", "아이디 또는 비밀번호를 입력하지 않고 로그인을 시도했습니다.");
 
-                    AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_EnterIdPasswd"), AlertIconType.warning);
-                    TempData["ReModel"] = model;
+                    resultData = new ResultDataDTO("Login_EnterIdPasswd", model, AlertIconType.WARNING, false);
+
                     return RedirectToAction(nameof(Login), "Login");
                 }
 
-				//로그인 검증
-				AccountValidDTO isAccountPass = await _loginService.IsAccountByIdAsync(model);
-				LogUtil.Info("SYSTEM", $"로그인 시도 UserId = {model.UserId} / 아이디 검증 결과 = {isAccountPass.IsPass}");
+                //로그인 검증
+                AccountValidDTO isAccountPass = await _loginService.IsAccountByIdAsync(model);
+                LogUtil.Info("SYSTEM", $"로그인 시도 UserId = {model.UserId} / 아이디 검증 결과 = {isAccountPass.IsPass}");
 
-				if (isAccountPass.IsPass)
-				{
-					try
-					{
+                if (isAccountPass.IsPass)
+                {
+                    try
+                    {
                         //레디스 세션 저장
                         await _redisSessionStore.SetRedisAsync($"userSession:{isAccountPass.AccountInfo.Idx}", new AccountModel
                         {
@@ -102,75 +97,55 @@ namespace R_WEB_PROJECT.Controllers.Login
 
                         }, TimeSpan.FromMinutes(30));
                     }
-					catch (Exception ex)
-					{
+                    catch (Exception ex)
+                    {
                         LogUtil.Error("REDIS", $"An error occurred while saving the Redis session : {ex.GetType().Name} - {ex.Message}", ex);
 
-                        //로그인 이력 저장
-                        await _logLoginService.InsertLogLoginAsync(new LogLoginModel
-                        {
-                            LoginUserId = isAccountPass.AccountInfo.UserId,
-                            LoginIp = _userInfoManager.GetUserIPAddress(),
-                            LoginAgent = _userInfoManager.GetUserAgent(),
-                            LoginStatus = _messageManager.GetMessage("Login_Error")
-                        });
+                        resultData = new ResultDataDTO("Login_Error", model, AlertIconType.ERROR, false);
 
-                        AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Error"), AlertIconType.error);
-                        TempData["ReModel"] = model;
                         return RedirectToAction(nameof(Login), "Login");
                     }
 
                     LogUtil.Info("SYSTEM", $"{isAccountPass.Result} - {isAccountPass.AccountInfo.ToString()}");
-                    LogUtil.Debug("SYSTEM", "=============================== LoginAction End ===============================");
 
-                    //로그인 이력 저장
-                    await _logLoginService.InsertLogLoginAsync(new LogLoginModel
-                    {
-                        LoginUserId = isAccountPass.AccountInfo.UserId,
-                        LoginIp = _userInfoManager.GetUserIPAddress(),
-                        LoginAgent = _userInfoManager.GetUserAgent(),
-                        LoginStatus = _messageManager.GetMessage("Login_Success")
-                    });
+                    resultData = new ResultDataDTO("Login_Success", model, AlertIconType.SUCCESS, true);
 
-                    AlertManager.MixinAlert(this, _messageManager.GetMessage("Login_Success"), "", AlertIconType.success);
-                    TempData["ReModel"] = model;
                     return RedirectToAction(nameof(MainController.Main), "Main");
                 }
 
                 //아이디가 존재하지 않거나 비밀번호가 존재하지 않을 경우
                 LogUtil.Info("SYSTEM", $"{isAccountPass.Result} - {model.ToString()}");
-            }
-            catch (Exception ex) 
-			{
-				LogUtil.Error("SYSTEM", $"An error occurred during login : {ex.GetType().Name} - {ex.Message}", ex);
 
+                resultData = new ResultDataDTO("Login_Invaild", model, AlertIconType.WARNING, false);
+            }
+            catch (Exception ex)
+            {
+                LogUtil.Error("SYSTEM", $"An error occurred during login : {ex.GetType().Name} - {ex.Message}", ex);
+
+                resultData = new ResultDataDTO("Login_Error", model, AlertIconType.ERROR, false);
+
+                return RedirectToAction(nameof(Login), "Login");
+            }
+            finally 
+            {
                 //로그인 이력 저장
                 await _logLoginService.InsertLogLoginAsync(new LogLoginModel
                 {
                     LoginUserId = model.UserId,
                     LoginIp = _userInfoManager.GetUserIPAddress(),
                     LoginAgent = _userInfoManager.GetUserAgent(),
-                    LoginStatus = _messageManager.GetMessage("Login_Error")
+                    LoginStatus = resultData.Status,
+                    LoginMessage = _messageManager.GetMessage(resultData.Message)
                 });
 
-                AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Error"), AlertIconType.error);
-                TempData["ReModel"] = model;
-                return RedirectToAction(nameof(Login), "Login");
+                //model Temp저장
+                TempDataUtil.TempDataSet(this, "AccountModel", model);
+
+                AlertManager.BasicAlert(this, "", _messageManager.GetMessage(resultData.Message), resultData.IconType);
+               
+                LogUtil.Debug("SYSTEM", "=============================== LoginAction End ===============================");
             }
 
-            LogUtil.Debug("SYSTEM", "=============================== LoginAction End ===============================");
-
-            //로그인 이력 저장
-            await _logLoginService.InsertLogLoginAsync(new LogLoginModel
-            {
-                LoginUserId = model.UserId,
-                LoginIp = _userInfoManager.GetUserIPAddress(),
-                LoginAgent = _userInfoManager.GetUserAgent(),
-                LoginStatus = _messageManager.GetMessage("Login_Invaild")
-            });
-
-            AlertManager.BasicAlert(this, "", _messageManager.GetMessage("Login_Invaild"), AlertIconType.warning);
-            TempData["ReModel"] = model;
             return RedirectToAction(nameof(Login), "Login");
         }
     }
