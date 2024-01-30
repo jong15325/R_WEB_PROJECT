@@ -6,35 +6,35 @@ namespace R_WEB_PROJECT.Utilities.Enums
     {
         public enum AlertIconType
         {
-            [Description("success")]
-            success,
+            [Description("SUCCESS")]
+            SUCCESS,
 
-            [Description("error")]
-            error,
+            [Description("ERROR")]
+            ERROR,
 
-            [Description("warning")]
-            warning,
+            [Description("WARNING")]
+            WARNING,
 
-            [Description("info")]
-            info,
+            [Description("INFO")]
+            INFO,
 
-            [Description("question")]
-            question,
+            [Description("QUESTION")]
+            QUESTION,
         }
 
         public enum AlertType
         {
-            [Description("Basic")]
-            Basic,
+            [Description("BASIC")]
+            BASIC,
 
-            [Description("Confirm")]
-            Confirm,
+            [Description("CONFIRM")]
+            CONFIRM,
 
-            [Description("Timer")]
-            Timer,
+            [Description("TIMER")]
+            TIMER,
 
-            [Description("Mixin")]
-            Mixin,
+            [Description("MIXIN")]
+            MIXIN,
         }
     }
 }

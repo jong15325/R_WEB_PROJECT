@@ -22,7 +22,7 @@
         var alert = JSON.parse('@Html.Raw(alertMessage)');
         console.log(alert);
         switch (alert.AlertType) {
-            case 'Basic': 
+            case 'BASIC': 
                 {
                     Swal.fire({
                         title: alert.Title,
@@ -31,7 +31,7 @@
                     });
                     break;
                 }
-            case 'Confirm':
+            case 'CONFIRM':
                 {
                     Swal.fire({
                         title: alert.Title,
@@ -40,7 +40,7 @@
                     });
                     break;
                 }
-            case 'Timer':
+            case 'TIMER':
                 {
                     Swal.fire({
                         title: alert.Title,
@@ -49,7 +49,7 @@
                     });
                     break;
                 }
-            case 'Mixin':
+            case 'MIXIN':
                 {
                     const Toast = Swal.mixin({
                         toast: true,

@@ -12,7 +12,7 @@ namespace R_WEB_PROJECT.Utilities.Manager
         //베이직 알럿
         public static void BasicAlert(Controller controller, string title, string message, AlertIconType iconType)
         {
-            AlertModel alert = new AlertModel { AlertType = AlertType.Basic.GetDescription(), Title = title, Message = message, AlertIconType = iconType.GetDescription() };
+            AlertModel alert = new AlertModel { AlertType = AlertType.BASIC.GetDescription(), Title = title, Message = message, AlertIconType = iconType.GetDescription() };
             
             controller.TempData["AlertMessage"] = alert.ToJsonString();
         }
@@ -20,7 +20,7 @@ namespace R_WEB_PROJECT.Utilities.Manager
         //토스트 알럿
         public static void MixinAlert(Controller controller, string title, string message, AlertIconType iconType)
         {
-            AlertModel alert =  new AlertModel { AlertType = AlertType.Mixin.GetDescription(), Title = title, Message = message, AlertIconType = iconType.GetDescription() };
+            AlertModel alert =  new AlertModel { AlertType = AlertType.MIXIN.GetDescription(), Title = title, Message = message, AlertIconType = iconType.GetDescription() };
 
             controller.TempData["AlertMessage"] = alert.ToJsonString();
         }
