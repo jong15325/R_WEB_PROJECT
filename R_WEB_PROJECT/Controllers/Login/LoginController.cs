@@ -10,9 +10,11 @@ using R_WEB_PROJECT.Utilities.Data;
 using R_WEB_PROJECT.Utilities.Enums;
 using R_WEB_PROJECT.Utilities.Log;
 using R_WEB_PROJECT.Utilities.Manager;
+using R_WEB_PROJECT.Utilities.Mapper;
 using R_WEB_PROJECT.Utilities.Redis;
 using System.Text.Json;
 using static R_WEB_PROJECT.Utilities.Enums.AlertEnum;
+using static StackExchange.Redis.Role;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace R_WEB_PROJECT.Controllers.Login
@@ -28,9 +30,13 @@ namespace R_WEB_PROJECT.Controllers.Login
         public LoginController(ILoginService loginService, ILogLoginService logLoginService, 
             RedisManager redisSessionStore, MessageManager messageManager, UserInfoManager userInfoManager)
 		{
-			_loginService = loginService;
+			/*서비스*/
+            _loginService = loginService;
             _logLoginService = logLoginService;
+            
             _redisSessionStore = redisSessionStore;
+
+            /*매니저*/
             _messageManager = messageManager;
             _userInfoManager = userInfoManager;
         }
@@ -42,7 +48,7 @@ namespace R_WEB_PROJECT.Controllers.Login
             try
             {
                 LogUtil.Debug("SYSTEM", "=============================== LoginPage Start ===============================");
-                var model = TempDataUtil.TempDataGet<AccountModel>(this, "AccountModel") ?? new AccountModel();
+                var model = TempDataUtil.TempDataGet<AccountModel>(this, "fromResult") ?? new AccountModel();
                 return View("login_main", model);
             }
             catch (Exception ex)
@@ -74,6 +80,8 @@ namespace R_WEB_PROJECT.Controllers.Login
                     LogUtil.Warn("SYSTEM", "아이디 또는 비밀번호를 입력하지 않고 로그인을 시도했습니다.");
 
                     resultData = new ResultDataDTO("Login_EnterIdPasswd", model, AlertIconType.WARNING, false);
+
+                    AlertManager.BasicAlert(this, "", _messageManager.GetMessage(resultData.Message), resultData.IconType);
 
                     return RedirectToAction(nameof(Login), "Login");
                 }
@@ -110,6 +118,8 @@ namespace R_WEB_PROJECT.Controllers.Login
 
                     resultData = new ResultDataDTO("Login_Success", model, AlertIconType.SUCCESS, true);
 
+                    AlertManager.MixinAlert(this, "", _messageManager.GetMessage(resultData.Message), resultData.IconType);
+
                     return RedirectToAction(nameof(MainController.Main), "Main");
                 }
 
@@ -117,12 +127,17 @@ namespace R_WEB_PROJECT.Controllers.Login
                 LogUtil.Info("SYSTEM", $"{isAccountPass.Result} - {model.ToString()}");
 
                 resultData = new ResultDataDTO("Login_Invaild", model, AlertIconType.WARNING, false);
+
+                AlertManager.BasicAlert(this, "", _messageManager.GetMessage(resultData.Message), resultData.IconType);
+
             }
             catch (Exception ex)
             {
                 LogUtil.Error("SYSTEM", $"An error occurred during login : {ex.GetType().Name} - {ex.Message}", ex);
 
                 resultData = new ResultDataDTO("Login_Error", model, AlertIconType.ERROR, false);
+
+                AlertManager.BasicAlert(this, "", _messageManager.GetMessage(resultData.Message), resultData.IconType);
 
                 return RedirectToAction(nameof(Login), "Login");
             }
@@ -139,9 +154,9 @@ namespace R_WEB_PROJECT.Controllers.Login
                 });
 
                 //model Temp저장
-                TempDataUtil.TempDataSet(this, "AccountModel", model);
-
-                AlertManager.BasicAlert(this, "", _messageManager.GetMessage(resultData.Message), resultData.IconType);
+                //DTO를 모델로 저장
+                AccountDTO resultDTO = MappingProfile.ResultAccount(model);
+                TempDataUtil.TempDataSet(this, "fromResult", resultDTO);
                
                 LogUtil.Debug("SYSTEM", "=============================== LoginAction End ===============================");
             }
