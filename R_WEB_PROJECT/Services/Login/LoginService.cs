@@ -10,7 +10,7 @@ namespace R_WEB_PROJECT.Services.Login
     public interface ILoginService
     {
         //아이디, 비밀번호로 계정 존재 여부 확인 서비스
-        Task<AccountValidDTO> IsAccountByIdAsync(AccountModel model);
+        Task<AccountValidDTO> selectAccountByIdAsync(AccountModel model);
     }
 
     public class LoginService : ILoginService
@@ -24,7 +24,7 @@ namespace R_WEB_PROJECT.Services.Login
         }
 
         //아이디, 비밀번호로 계정 존재 여부 확인 서비스
-        public async Task<AccountValidDTO> IsAccountByIdAsync(AccountModel model)
+        public async Task<AccountValidDTO> selectAccountByIdAsync(AccountModel model)
         {
             try
             {
@@ -33,7 +33,7 @@ namespace R_WEB_PROJECT.Services.Login
                 bool isPass = false;
                 string result = GetResultMessage(LoginResult.Success);
 
-                var accountInfo = await _loginRepository.IsAccountByIdAsync(model);
+                var accountInfo = await _loginRepository.selectAccountByIdAsync(model);
                 if (accountInfo != null)
                 {
                     // 비밀번호 해시값 검증

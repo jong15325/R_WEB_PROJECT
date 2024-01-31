@@ -51,10 +51,12 @@ namespace R_WEB_PROJECT.Models.User
 
         public DateTime? UserDeleteAt { get; set; }
 
+        public DateTime? UserLockAt { get; set; }
+
         public override string ToString()
         {
             return $"Idx[{Idx}], UserId[{UserId}], UserName[{UserName}], UserRoleCd[{UserRoleCd}], UserCreateAt[{UserCreateAt}]," +
-                $"UserUpdateAt[{UserUpdateAt}], UserDeleteAt[{UserDeleteAt}]";
+                $"UserUpdateAt[{UserUpdateAt}], UserDeleteAt[{UserDeleteAt}], UserLockAt[{UserLockAt}]";
         }
     }
 }

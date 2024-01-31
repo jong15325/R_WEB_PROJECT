@@ -7,7 +7,7 @@ namespace R_WEB_PROJECT.Repositories.Login
     public interface ILoginRepository
     {
         //아이디, 비밀번호로 계정 존재 여부 확인
-        Task<AccountModel> IsAccountByIdAsync(AccountModel model);
+        Task<AccountModel> selectAccountByIdAsync(AccountModel model);
     }
     public class LoginRepository : ILoginRepository
     {
@@ -19,7 +19,7 @@ namespace R_WEB_PROJECT.Repositories.Login
         }
 
         //아이디, 비밀번호로 계정 존재 여부 확인
-        public async Task<AccountModel> IsAccountByIdAsync(AccountModel model)
+        public async Task<AccountModel> selectAccountByIdAsync(AccountModel model)
         {
             const string query = "SELECT * FROM Account WHERE UserId = @UserId";
 

@@ -11,7 +11,7 @@ namespace R_WEB_PROJECT.Models.Log
 			LoginAt = DateTime.Now;
 			LoginIp = string.Empty;
 			LoginAgent = string.Empty;
-			LoginStatus = false;
+			LoginStatusCode = 0;
 			LoginMessage = string.Empty;
 		}
 
@@ -35,7 +35,7 @@ namespace R_WEB_PROJECT.Models.Log
 		public string LoginAgent { get; set; }
 
 		[Required]
-		public bool LoginStatus { get; set; }
+		public int LoginStatusCode { get; set; }
 
         [StringLength(200)]
         public string LoginMessage { get; set; }
@@ -43,7 +43,7 @@ namespace R_WEB_PROJECT.Models.Log
         public override string ToString()
 		{
 			return $"Idx[{Idx}], LoginUserId[{LoginUserId}], LoginAt[{LoginAt}], LoginIp[{LoginIp}], LoginAgent[{LoginAgent}]," +
-				$"LoginStatus[{LoginStatus}]";
+				$"LoginStatusCode[{LoginStatusCode}]";
 		}
 	}
 }

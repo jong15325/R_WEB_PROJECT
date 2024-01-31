@@ -22,15 +22,15 @@ namespace R_WEB_PROJECT.Repositories.Log
         //아이디, 비밀번호로 계정 존재 여부 확인
         public async Task<int> InsertLogLoginAsync(LogLoginModel model)
         {
-            const string query = "INSERT INTO LogLogin (LoginUserId, LoginAt, LoginIp, LoginAgent, LoginStatus, LoginMessage) " +
-                "VALUES (@LoginUserId, GETDATE(), @LoginIp, @LoginAgent, @LoginStatus, @LoginMessage)";
+            const string query = "INSERT INTO LogLogin (LoginUserId, LoginAt, LoginIp, LoginAgent, LoginStatusCode, LoginMessage) " +
+                "VALUES (@LoginUserId, GETDATE(), @LoginIp, @LoginAgent, @LoginStatusCode, @LoginMessage)";
 
             object parameters = new
             {
                 model.LoginUserId,
                 model.LoginIp,
                 model.LoginAgent,
-                model.LoginStatus,
+                model.LoginStatusCode,
                 model.LoginMessage
             };
 

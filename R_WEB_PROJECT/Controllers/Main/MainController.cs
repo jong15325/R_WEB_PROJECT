@@ -7,9 +7,9 @@ namespace R_WEB_PROJECT.Controllers.Main
     public class MainController : Controller
     {
         private readonly RedisManager _redisSessionStore;
-        private readonly MessageManager _messageManager;
+        private readonly ResourceManager _messageManager;
 
-        public MainController( RedisManager redisSessionStore, MessageManager messageManager)
+        public MainController( RedisManager redisSessionStore, ResourceManager messageManager)
         {
             _redisSessionStore = redisSessionStore;
             _messageManager = messageManager;
