@@ -3,12 +3,12 @@ using R_WEB_PROJECT.Resources;
 
 namespace R_WEB_PROJECT.Utilities.Manager
 {
-    public class MessageManager
+    public class ResourceManager
     {
 
         private readonly IStringLocalizer<SharedResource> _localizer;
 
-        public MessageManager(IStringLocalizer<SharedResource> localizer)
+        public ResourceManager(IStringLocalizer<SharedResource> localizer)
         {
             _localizer = localizer;
         }
