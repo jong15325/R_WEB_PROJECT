@@ -47,6 +47,7 @@ namespace R_WEB_PROJECT.Controllers.Login
             {
                 LogUtil.Debug("SYSTEM", "=============================== LoginPage Start ===============================");
                 var model = TempDataUtil.TempDataGet<AccountModel>(this, "formResult") ?? new AccountModel();
+
                 return View("login_main", model);
             }
             catch (Exception ex)
@@ -160,5 +161,28 @@ namespace R_WEB_PROJECT.Controllers.Login
 
             return RedirectToAction(nameof(Login), "Login");
         }
+
+        //로그인 메인 페이지
+        [Route("/login/register")]
+        public IActionResult Register()
+        {
+            try
+            {
+                LogUtil.Debug("SYSTEM", "=============================== RegisterPage Start ===============================");
+                var model = TempDataUtil.TempDataGet<AccountModel>(this, "formResult") ?? new AccountModel();
+
+                return View("login_register", model);
+            }
+            catch (Exception ex)
+            {
+                LogUtil.Error("SYSTEM", $"An error occurred during login: {ex.Message}", ex);
+                return RedirectToAction(nameof(Error), "Error");
+            }
+            finally
+            {
+                LogUtil.Debug("SYSTEM", "=============================== RegisterPage End ===============================");
+            }
+        }
+
     }
 }

@@ -2,14 +2,7 @@
     Layout = "_Layout";
 }
 
-@{
-    var resultDTO = ViewBag.ResultDTO as R_WEB_PROJECT.DTOs.AccountDTO;
-}
-
-<body>
-    <!-- ===============================================-->
-    <!--    Main Content-->
-    <!-- ===============================================-->
+<body class="bg-900">
     <main class="main bg-900" id="top">
         <div class="container" data-layout="container">
             <script>
@@ -30,12 +23,14 @@
                         <div class="card-body p-4 p-sm-5">
                             <form action="/login/loginAction" method="POST" class="needs-validation" id="frm" name="frm" novalidate="">
                                 @Html.AntiForgeryToken()
-                                <div class="mb-3">
+                                <div class="form-floating mb-3">
                                     <input class="form-control" type="text" name="UserId" placeholder="이메일 주소를 입력해주세요" value="@Model.UserId" required="" />
+                                    <label for="floatingInput">Email</label>
                                     <div class="invalid-feedback">이메일 주소를 입력해주세요</div>
                                 </div>
-                                <div class="mb-3">
+                                <div class="form-floating mb-3">
                                     <input class="form-control" type="password" name="UserPassword" placeholder="비밀번호를 입력해주세요" required=""/>
+                                    <label for="floatingInput">Password</label>
                                     <div class="invalid-feedback">비밀번호를 입력해주세요</div>
                                 </div>
                                 <div class="row flex-between-center mb-3">
@@ -45,10 +40,18 @@
                                             <label class="form-check-label mb-0" for="basic-checkbox">아이디 기억하기</label>
                                         </div>
                                     </div>
-                                    <div class="col-auto"><a class="fs-10" href="../../../pages/authentication/simple/forgot-password.html">비밀번호를 잊으셨나요?</a></div>
                                 </div>
                                 <div class="mb-3">
                                     <button class="btn bg-900 text-light me-1 mb-1 w-100" type="submit" name="submit">L O G I N</button>
+                                </div>
+                                <div class="row flex-between-center mb-3">
+                                    <div class="col-auto">
+                                        <a class="fs-10 fw-bold text-700" href="../../../pages/authentication/simple/forgot-password.html">아이디 찾기</a>
+                                        <a class="fs-10 fw-bold text-700" href="../../../pages/authentication/simple/forgot-password.html">비밀번호 찾기</a>
+                                    </div>
+                                    <div class="col-auto">
+                                        <a class="fs-10 fw-bold text-700" href="/login/register">회원가입</a>
+                                    </div>
                                 </div>
                             </form>
                             <div class="position-relative mt-4">
