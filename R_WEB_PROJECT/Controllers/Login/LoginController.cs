@@ -12,6 +12,7 @@ using R_WEB_PROJECT.Utilities.Manager;
 using R_WEB_PROJECT.Utilities.Mapper;
 using R_WEB_PROJECT.Utilities.Redis;
 using static R_WEB_PROJECT.Utilities.Enums.AlertEnum;
+using static R_WEB_PROJECT.Utilities.Enums.StatusEnum;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace R_WEB_PROJECT.Controllers.Login
@@ -75,7 +76,7 @@ namespace R_WEB_PROJECT.Controllers.Login
                 {
                     // UserId 또는 UserPassword가 비어있는 경우 처리
                     LogUtil.Warn("SYSTEM", "아이디 또는 비밀번호를 입력하지 않고 로그인을 시도했습니다.");
-                    resultData = new ResultData(AlertType.BASIC, AlertIconType.WARNING, "", _messageManager.GetMessage("Login_EnterIdPasswd"), 300);
+                    resultData = new ResultData(AlertType.BASIC, AlertIconType.WARNING, "", _messageManager.GetMessage("Login_EnterIdPasswd"), (int)LoginStatusCode.LOGIN_ENTERIDPASSWD);
 
                     return RedirectToAction(nameof(Login), "Login");
                 }
@@ -104,14 +105,14 @@ namespace R_WEB_PROJECT.Controllers.Login
                         catch (Exception ex)
                         {
                             LogUtil.Error("REDIS", $"An error occurred while saving the Redis session : {ex.GetType().Name} - {ex.Message}", ex);
-                            resultData = new ResultData(AlertType.BASIC, AlertIconType.ERROR, "", _messageManager.GetMessage("Login_Error"), 400);
+                            resultData = new ResultData(AlertType.BASIC, AlertIconType.ERROR, "", _messageManager.GetMessage("Login_Error"), (int)LoginStatusCode.LOGIN_ERROR);
 
                             return RedirectToAction(nameof(Login), "Login");
                         }
 
                         //로그인 성공
                         LogUtil.Info("SYSTEM", $"{account.Result} - {account.AccountInfo.ToString()}");
-                        resultData = new ResultData(AlertType.MIXIN, AlertIconType.SUCCESS, _messageManager.GetMessage("Login_Success"), "", 100);
+                        resultData = new ResultData(AlertType.MIXIN, AlertIconType.SUCCESS, _messageManager.GetMessage("Login_Success"), "", (int)LoginStatusCode.LOGIN_SUCCESS);
 
                         return RedirectToAction(nameof(MainController.Main), "Main");
                     }
@@ -119,20 +120,20 @@ namespace R_WEB_PROJECT.Controllers.Login
                     {
                         //계정 잠금 상태
                         LogUtil.Info("SYSTEM", $"{account.Result} - {model.ToString()}");
-                        resultData = new ResultData(AlertType.BASIC, AlertIconType.WARNING, "", _messageManager.GetMessage("Login_Lock"), 600);
+                        resultData = new ResultData(AlertType.BASIC, AlertIconType.WARNING, "", _messageManager.GetMessage("Login_Lock"), (int)LoginStatusCode.LOGIN_LOCK);
                     }
                 }
                 else 
                 {
                     //아이디가 존재하지 않거나 비밀번호가 존재하지 않을 경우
                     LogUtil.Info("SYSTEM", $"{account.Result} - {model.ToString()}");
-                    resultData = new ResultData(AlertType.BASIC, AlertIconType.WARNING, "", _messageManager.GetMessage("Login_Invalid"), 500);
+                    resultData = new ResultData(AlertType.BASIC, AlertIconType.WARNING, "", _messageManager.GetMessage("Login_Invalid"), (int)LoginStatusCode.LOGIN_INVALID);
                 }
             }
             catch (Exception ex)
             {
                 LogUtil.Error("SYSTEM", $"An error occurred during login : {ex.GetType().Name} - {ex.Message}", ex);
-                resultData = new ResultData(AlertType.BASIC, AlertIconType.ERROR, "", _messageManager.GetMessage("Login_Error"), 400);
+                resultData = new ResultData(AlertType.BASIC, AlertIconType.ERROR, "", _messageManager.GetMessage("Login_Error"), (int)LoginStatusCode.LOGIN_ERROR);
 
                 return RedirectToAction(nameof(Login), "Login");
             }

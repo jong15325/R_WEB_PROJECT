@@ -119,20 +119,26 @@
   </resheader>
   <data name="Login_EnterIdPasswd" xml:space="preserve">
     <value>아이디 또는 비밀번호를 입력해주세요.</value>
+    <comment>300</comment>
   </data>
   <data name="Login_Error" xml:space="preserve">
     <value>로그인 시도 중 오류가 발생했습니다.</value>
+    <comment>400</comment>
   </data>
-  <data name="Login_Fail" xml:space="preserve">
+  <data name="Login_Failed" xml:space="preserve">
     <value>로그인에 실패하였습니다.</value>
+    <comment>200</comment>
   </data>
   <data name="Login_Invalid" xml:space="preserve">
     <value>아이디 또는 비밀번호가 잘못되었습니다.</value>
+    <comment>500</comment>
   </data>
   <data name="Login_Lock" xml:space="preserve">
     <value>잠긴 계정입니다.</value>
+    <comment>600</comment>
   </data>
   <data name="Login_Success" xml:space="preserve">
     <value>성공적으로 로그인이 되었습니다.</value>
+    <comment>100</comment>
   </data>
 </root>
