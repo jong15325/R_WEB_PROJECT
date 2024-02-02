@@ -5,7 +5,7 @@
 -- DROP TABLE RWEB.dbo.Account;
 
 CREATE TABLE RWEB.dbo.Account (
-	Idx int IDENTITY(1,1) PRIMARY KEY NOT NULL,
+	Idx int IDENTITY(1,1) NOT NULL,
 	UserId nvarchar(50) COLLATE Korean_Wansung_CI_AS NOT NULL,
 	UserType nvarchar(10) COLLATE Korean_Wansung_CI_AS NOT NULL,
 	UserPassword nvarchar(255) COLLATE Korean_Wansung_CI_AS NOT NULL,
@@ -13,8 +13,10 @@ CREATE TABLE RWEB.dbo.Account (
 	UserName nvarchar(30) COLLATE Korean_Wansung_CI_AS NOT NULL,
 	UserRoleCd nvarchar(20) COLLATE Korean_Wansung_CI_AS NULL,
 	UserCreateAt datetime DEFAULT getdate() NOT NULL,
-	UserUpdateAt datetime,
-	UserDeleteAt datetime
+	UserUpdateAt datetime NULL,
+	UserDeleteAt datetime NULL,
+	UserLockAt datetime NULL,
+	CONSTRAINT PK__Account__DC501A7888A1FF4F PRIMARY KEY (Idx)
 );
 
 EXEC RWEB.sys.sp_addextendedproperty 'MS_Description', N'고유번호', 'schema', N'dbo', 'table', N'Account', 'column', N'Idx';
@@ -27,21 +29,27 @@ EXEC RWEB.sys.sp_addextendedproperty 'MS_Description', N'유저 권한 코드', 'schem
 EXEC RWEB.sys.sp_addextendedproperty 'MS_Description', N'생성일', 'schema', N'dbo', 'table', N'Account', 'column', N'UserCreateAt';
 EXEC RWEB.sys.sp_addextendedproperty 'MS_Description', N'업데이트일', 'schema', N'dbo', 'table', N'Account', 'column', N'UserUpdateAt';
 EXEC RWEB.sys.sp_addextendedproperty 'MS_Description', N'삭제일', 'schema', N'dbo', 'table', N'Account', 'column', N'UserDeleteAt';
+EXEC RWEB.sys.sp_addextendedproperty 'MS_Description', N'계정 잠금일', 'schema', N'dbo', 'table', N'Account', 'column', N'UserLockAt';
 
--- INSERT INTO RWEB.dbo.Account(idx, UserId, UserType, UserPassword, UserPasswordSalt, UserName, UserRoleCd, UserCreateAt, UserUpdateAt, UserDeleteAt)VALUES(1, N'howeer15325@naver.com', N'1', N'Fgul2zLMwyqMsRsvVCDOvNs4EhPup3bvoFcrwAutx/0=', N'r8STsh4ybHjn5+6hNBxkgI9WxWa4u88Nthgq7t3TTKs=', N'rrr', N'RW-CD', '2024-01-11 10:42:25.340', NULL, NULL);
+/*INSERT INTO RWEB.dbo.Account (Idx, UserId, UserType, UserPassword, UserPasswordSalt, UserName, UserRoleCd, UserCreateAt, UserUpdateAt, UserDeleteAt, UserLockAt) VALUES(2, N'howeer15325@naver.com', N'1', N'Fgul2zLMwyqMsRsvVCDOvNs4EhPup3bvoFcrwAutx/0=', N'r8STsh4ybHjn5+6hNBxkgI9WxWa4u88Nthgq7t3TTKs=', N'rrr', N'RW-CD', '2024-01-11 10:42:25.340', NULL, NULL, '2024-01-31 17:25:00.000');*/
 
 CREATE TABLE RWEB.dbo.LogLogin (
-	Idx int IDENTITY(1,1) PRIMARY KEY NOT NULL,
-	LoginUserId nvarchar(50) COLLATE Korean_Wansung_CI_AS,
+	Idx int IDENTITY(1,1) NOT NULL,
+	LoginUserId nvarchar(50) COLLATE Korean_Wansung_CI_AS NOT NULL,
 	LoginAt datetime DEFAULT getdate() NOT NULL,
-	LoginIp NVARCHAR(45) NOT NULL,
-	LoginAgent NVARCHAR(MAX), -- 브라우저 정보 등
-	LoginStatus NVARCHAR(20) NOT NULL -- 성공 또는 실패
+	LoginIp nvarchar(45) COLLATE Korean_Wansung_CI_AS NOT NULL,
+	LoginAgent nvarchar(MAX) COLLATE Korean_Wansung_CI_AS NOT NULL,
+	LoginMessage nvarchar(200) COLLATE Korean_Wansung_CI_AS NULL,
+	LoginStatusCode int NOT NULL,
+	CONSTRAINT PK__LogLogin__C496003E0F972420 PRIMARY KEY (Idx)
 );
 
-EXEC RWEB.sys.sp_addextendedproperty 'MS_Description', N'고유번호', 'schema', N'dbo', 'table', N'LogLogin', 'column', N'Idx';
-EXEC RWEB.sys.sp_addextendedproperty 'MS_Description', N'유저 아이디', 'schema', N'dbo', 'table', N'LogLogin', 'column', N'LoginUserId';
-EXEC RWEB.sys.sp_addextendedproperty 'MS_Description', N'로그인 일시', 'schema', N'dbo', 'table', N'LogLogin', 'column', N'LoginAt';
-EXEC RWEB.sys.sp_addextendedproperty 'MS_Description', N'로그인 아이피', 'schema', N'dbo', 'table', N'LogLogin', 'column', N'LoginIp';
-EXEC RWEB.sys.sp_addextendedproperty 'MS_Description', N'로그인 장비', 'schema', N'dbo', 'table', N'LogLogin', 'column', N'LoginAgent';
-EXEC RWEB.sys.sp_addextendedproperty 'MS_Description', N'로그인 결과 상태', 'schema', N'dbo', 'table', N'LogLogin', 'column', N'LoginStatus';
+EXEC RWEB.sys.sp_updateextendedproperty 'MS_Description', N'고유번호', 'schema', N'dbo', 'table', N'LogLogin', 'column', N'Idx';
+EXEC RWEB.sys.sp_updateextendedproperty 'MS_Description', N'유저 아이디', 'schema', N'dbo', 'table', N'LogLogin', 'column', N'LoginUserId';
+EXEC RWEB.sys.sp_updateextendedproperty 'MS_Description', N'로그인 일시', 'schema', N'dbo', 'table', N'LogLogin', 'column', N'LoginAt';
+EXEC RWEB.sys.sp_updateextendedproperty 'MS_Description', N'로그인 아이피', 'schema', N'dbo', 'table', N'LogLogin', 'column', N'LoginIp';
+EXEC RWEB.sys.sp_updateextendedproperty 'MS_Description', N'로그인 장비', 'schema', N'dbo', 'table', N'LogLogin', 'column', N'LoginAgent';
+EXEC RWEB.sys.sp_updateextendedproperty 'MS_Description', N'로그인 결과 메세지', 'schema', N'dbo', 'table', N'LogLogin', 'column', N'LoginMessage';
+EXEC RWEB.sys.sp_updateextendedproperty 'MS_Description', N'로그인 결과 상태 코드', 'schema', N'dbo', 'table', N'LogLogin', 'column', N'LoginStatusCode';
+
+

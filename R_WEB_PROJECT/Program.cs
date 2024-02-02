@@ -111,4 +111,7 @@ LogUtil.Info("SYSTEM", $"Default controller route configured.", "Program");
 app.MapRazorPages();
 LogUtil.Info("SYSTEM", $"Razor pages mapped.", "Program");
 
+app.UseSession(); // 세션 미들웨어 추가
+LogUtil.Info("SYSTEM", $"UseSession enabled.", "Program");
+
 app.Run();

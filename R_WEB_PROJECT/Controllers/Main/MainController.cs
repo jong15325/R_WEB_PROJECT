@@ -16,7 +16,6 @@ namespace R_WEB_PROJECT.Controllers.Main
         }
 
         //메인 페이지
-        [Route("/main")]
         public async Task<IActionResult> Main()
         {
 
