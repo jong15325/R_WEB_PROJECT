@@ -38,6 +38,8 @@ namespace R_WEB_PROJECT.Repositories.Log
 
             try
             {
+                LogUtil.Debug("SYSTEM", "=============================== InsertLogLoginAsync Start ===============================");
+
                 int result = await _dbManager.ExecuteNonQueryAsync(query, parameters);
 
                 return result;
@@ -46,6 +48,11 @@ namespace R_WEB_PROJECT.Repositories.Log
             {
                 LogUtil.Error("SYSTEM", $"An error occurred during InsertLogLoginAsync Repository : {ex.GetType().Name} - {ex.Message}", ex);
                 throw;
+            }
+            finally
+            {
+                LogUtil.Debug("SYSTEM", "=============================== InsertLogLoginAsync End ===============================");
+
             }
         }
     }

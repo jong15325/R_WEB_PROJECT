@@ -28,6 +28,8 @@ namespace R_WEB_PROJECT.Repositories.Login
 
             try
             {
+                LogUtil.Debug("SYSTEM", "=============================== selectAccountByIdAsync Start ===============================");
+
                 AccountModel result = await _dbManager.GetSingleRecordAsync<AccountModel>(query, parameters);
 
                 return result;
@@ -36,6 +38,11 @@ namespace R_WEB_PROJECT.Repositories.Login
             {
                 LogUtil.Error("SYSTEM", $"An error occurred during IsAccountByIdAsync Repository : {ex.GetType().Name} - {ex.Message}", ex);
                 throw;
+            }
+            finally
+            {
+                LogUtil.Debug("SYSTEM", "=============================== selectAccountByIdAsync End ===============================");
+
             }
         }
     }

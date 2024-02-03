@@ -48,15 +48,16 @@ namespace R_WEB_PROJECT.Services.Login
                 }
                 else
                     result = GetResultMessage(LoginResult.NotFound);
-
-                LogUtil.Debug("SYSTEM", "=============================== IsAccountByIdPassAsync End ===============================");
-
                 return new AccountValidDTO { IsPass = isPass, AccountInfo = accountInfo, Result = result };
             }
             catch (Exception ex)
             {
                 LogUtil.Error("SYSTEM", $"An error occurred during IsAccountByIdAsync Service : {ex.GetType().Name} - {ex.Message}", ex);
                 throw;
+            }
+            finally
+            {
+                LogUtil.Debug("SYSTEM", "=============================== IsAccountByIdPassAsync End ===============================");
             }
         }
     }

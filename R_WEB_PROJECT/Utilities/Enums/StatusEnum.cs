@@ -10,6 +10,7 @@
             LOGIN_ERROR = 400,
             LOGIN_INVALID = 500,
             LOGIN_LOCK = 600,
+            LOGIN_TOKEN_FAILED = 700,
         }
     }
 }

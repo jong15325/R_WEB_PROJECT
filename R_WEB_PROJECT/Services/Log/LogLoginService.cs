@@ -30,14 +30,17 @@ namespace R_WEB_PROJECT.Services.Log
 
                 int result = await _logLoginRepository.InsertLogLoginAsync(model);
 
-                LogUtil.Debug("SYSTEM", "=============================== InsertLogLoginAsync End ===============================");
-
                 return result;
             }
             catch (Exception ex)
             {
                 LogUtil.Error("SYSTEM", $"An error occurred during InsertLogLoginAsync Service : {ex.GetType().Name} - {ex.Message}", ex);
                 throw;
+            }
+            finally
+            {
+                LogUtil.Debug("SYSTEM", "=============================== InsertLogLoginAsync End ===============================");
+
             }
         }
     }

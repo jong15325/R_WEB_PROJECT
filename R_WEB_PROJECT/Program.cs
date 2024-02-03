@@ -7,7 +7,6 @@ using R_WEB_PROJECT.Modules.Session;
 using R_WEB_PROJECT.Utilities.Log;
 using Microsoft.AspNetCore.Mvc.Razor;
 using R_WEB_PROJECT.Resources;
-using R_WEB_PROJECT.Utilities.Manager;
 using R_WEB_PROJECT.Modules.Manager;
 
 var builder = WebApplication.CreateBuilder(args);

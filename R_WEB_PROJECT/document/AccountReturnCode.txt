@@ -7,4 +7,4 @@
 #400 : 시스템 오류 (Login_Error)
 #500 : 아이디 또는 비밀번호 오류 (Login_Invalid)
 #600 : 잠긴 계정 (Login_Lock)
-
+#700 : 로그인 JWT 토큰 반환 실패 (Login_Token_Failed)
