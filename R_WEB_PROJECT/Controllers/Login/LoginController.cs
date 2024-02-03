@@ -21,17 +21,19 @@ namespace R_WEB_PROJECT.Controllers.Login
     { 
 		private readonly ILoginService _loginService;
         private readonly ILogLoginService _logLoginService;
+        private readonly IJWTAuthService _jwtAuthService;
         private readonly RedisManager _redisSessionStore;
         private readonly ResourceManager _messageManager;
         private readonly UserInfoManager _userInfoManager;
 
-        public LoginController(ILoginService loginService, ILogLoginService logLoginService, 
+        public LoginController(ILoginService loginService, ILogLoginService logLoginService, IJWTAuthService jwtAuthService,
             RedisManager redisSessionStore, ResourceManager messageManager, UserInfoManager userInfoManager)
 		{
 			/*서비스*/
             _loginService = loginService;
             _logLoginService = logLoginService;
-            
+            _jwtAuthService = jwtAuthService;
+
             _redisSessionStore = redisSessionStore;
 
             /*매니저*/
@@ -90,6 +92,17 @@ namespace R_WEB_PROJECT.Controllers.Login
                 {
                     if (!CoreFunction.IsUserLockCheck(account))
                     {
+                        //JWTAuthAPI 호출 토큰 생성 및 반환
+                        // 로그인 검증
+                        var token = await _jwtAuthService.AuthenticateUserAsync(account);
+                        if (string.IsNullOrEmpty(token))
+                        {
+                            LogUtil.Info("SYSTEM", $"{account.Result} - {model.ToString()}");
+                            resultData = new ResultData(AlertType.BASIC, AlertIconType.ERROR, "", _messageManager.GetMessage("Login_Token_Failed"), (int)LoginStatusCode.LOGIN_TOKEN_FAILED);
+                            
+                            return RedirectToAction(nameof(Login), "Login");
+                        }
+
                         try
                         {
                             //레디스 세션 저장
