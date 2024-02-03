@@ -34,12 +34,12 @@ namespace R_WEB_PROJECT.Services.Login
                 var response = await client.PostAsync("https://localhost:7077/api/login", content);
                 response.EnsureSuccessStatusCode();
 
-                var responseString = await response.Content.ReadAsStringAsync();
-                var token = JsonSerializer.Deserialize<string>(responseString);
+                var token = await response.Content.ReadAsStringAsync();
+                LogUtil.Debug("SYSTEM", $"JWT 인증 토큰3 : " + token);
 
                 return token;
             }
-            catch (HttpRequestException ex)
+            catch (Exception ex)
             {
                 // API 호출 실패 처리
                 LogUtil.Error("SYSTEM", $"An error occurred during AuthenticateUserAsync Service : {ex.GetType().Name} - {ex.Message}", ex);

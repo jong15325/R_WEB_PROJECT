@@ -7,55 +7,51 @@ using System.Text;
 
 namespace JWTAuthAPI.Services
 {
-    public class JWTAuthService
+    public interface IJWTAuthService
     {
-        internal object GenerateToken(string userId, string role)
+        string GenerateToken(string userId, string role);
+    }
+
+    public class JWTAuthService : IJWTAuthService
+    {
+        private readonly IConfiguration _configuration;
+
+        public JWTAuthService(IConfiguration configuration)
         {
-            throw new NotImplementedException();
+            _configuration = configuration;
         }
 
-        public class JwtAuthService
+        public string GenerateToken(string userId, string role)
         {
-            private readonly IConfiguration _configuration;
-
-            public JwtAuthService(IConfiguration configuration)
+            try
             {
-                _configuration = configuration;
-            }
+                LogUtil.Debug("API-JWT_AUTH", "=============================== GenerateToken Service Start ===============================");
 
-            public string GenerateToken(string userId, string role)
-            {
-                try
-                {
-                    LogUtil.Debug("API-JWT_AUTH", "=============================== GenerateToken Start ===============================");
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
-                    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-                    var token = new JwtSecurityToken(
-                        issuer: _configuration["Jwt:Issuer"],
-                        audience: _configuration["Jwt:Audience"],
-                        claims: new[]
-                        {
+                var token = new JwtSecurityToken(
+                    issuer: _configuration["Jwt:Issuer"],
+                    audience: _configuration["Jwt:Audience"],
+                    claims: new[]
+                    {
                         new Claim(ClaimTypes.NameIdentifier, userId),
                         new Claim(ClaimTypes.Role, role)
-                        },
-                        expires: DateTime.UtcNow.AddMinutes(int.Parse(_configuration["Jwt:ExpirationMinutes"])),
-                        signingCredentials: creds
-                    );
+                    },
+                    expires: DateTime.UtcNow.AddMinutes(int.Parse(_configuration["Jwt:ExpirationMinutes"])),
+                    signingCredentials: creds
+                );
 
-                    return new JwtSecurityTokenHandler().WriteToken(token);
-                }
-                catch (Exception ex)
-                {
-                    LogUtil.Error("API-JWT_AUTH", $"An error occurred during GenerateToken Service: {ex.GetType().Name} - {ex.Message}", ex);
-                    throw;
-                }
-                finally
-                {
-                    LogUtil.Debug("API-JWT_AUTH", "=============================== GenerateToken End ===============================");
-
-                }
+                return new JwtSecurityTokenHandler().WriteToken(token);
+            }
+            catch (Exception ex)
+            {
+                LogUtil.Error("API-JWT_AUTH", $"An error occurred during GenerateToken Service: {ex.GetType().Name} - {ex.Message}", ex);
+                throw;
+            }
+            finally
+            {
+                LogUtil.Debug("API-JWT_AUTH", "=============================== GenerateToken Service End ===============================");
             }
         }
     }

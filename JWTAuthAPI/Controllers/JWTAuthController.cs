@@ -28,6 +28,7 @@ namespace JWTAuthAPI.Controllers
                 var token = _jwtAuthService.GenerateToken(model.UserId, model.UserRoleCd);
 
                 LogUtil.Info("API-JWT_AUTH", $"tokentokentokentoken{token}");
+
                 return Ok(new { Token = token });
             }
             catch (Exception ex)

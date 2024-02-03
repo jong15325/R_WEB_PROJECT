@@ -21,14 +21,14 @@ namespace R_WEB_PROJECT.Repositories.Login
         //아이디, 비밀번호로 계정 존재 여부 확인
         public async Task<AccountModel> selectAccountByIdAsync(AccountModel model)
         {
-            const string query = "SELECT * FROM Account WHERE UserId = @UserId";
-
-            object parameters = new { model.UserId };
-            LogUtil.Debug("SQL", SqlParamMapper.MapQuery(query, parameters));
-
             try
             {
                 LogUtil.Debug("SYSTEM", "=============================== selectAccountByIdAsync Repository Start ===============================");
+
+                const string query = "SELECT * FROM Account WHERE UserId = @UserId";
+
+                object parameters = new { model.UserId };
+                LogUtil.Debug("SQL", SqlParamMapper.MapQuery(query, parameters));
 
                 AccountModel result = await _dbManager.GetSingleRecordAsync<AccountModel>(query, parameters);
 

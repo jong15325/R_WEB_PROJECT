@@ -95,6 +95,8 @@ namespace R_WEB_PROJECT.Controllers.Login
                         //JWTAuthAPI 호출 토큰 생성 및 반환
                         // 로그인 검증
                         var token = await _jwtAuthService.AuthenticateUserAsync(account);
+                        LogUtil.Info("SYSTEM", $"JWTAuthAPI 인증 토큰 생성 완료");
+
                         if (string.IsNullOrEmpty(token))
                         {
                             LogUtil.Info("SYSTEM", $"{account.Result} - {model.ToString()}");
