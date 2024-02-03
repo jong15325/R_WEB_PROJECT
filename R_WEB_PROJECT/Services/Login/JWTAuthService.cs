@@ -24,7 +24,7 @@ namespace R_WEB_PROJECT.Services.Login
         {
             try
             {
-                LogUtil.Debug("SYSTEM", "=============================== AuthenticateUserAsync Start ===============================");
+                LogUtil.Debug("SYSTEM", "=============================== AuthenticateUserAsync Service Start ===============================");
 
                 var client = new HttpClient();
                 var json = JsonSerializer.Serialize(dto.AccountInfo);
@@ -47,7 +47,7 @@ namespace R_WEB_PROJECT.Services.Login
             }
             finally
             {
-                LogUtil.Debug("SYSTEM", "=============================== AuthenticateUserAsync End ===============================");
+                LogUtil.Debug("SYSTEM", "=============================== AuthenticateUserAsync Service End ===============================");
             }
         }
     }

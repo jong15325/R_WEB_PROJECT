@@ -28,7 +28,7 @@ namespace R_WEB_PROJECT.Services.Login
         {
             try
             {
-                LogUtil.Debug("SYSTEM", "=============================== IsAccountByIdPassAsync Start ===============================");
+                LogUtil.Debug("SYSTEM", "=============================== IsAccountByIdPassAsync Service Start ===============================");
 
                 bool isPass = false;
                 string result = GetResultMessage(LoginResult.Success);
@@ -57,7 +57,7 @@ namespace R_WEB_PROJECT.Services.Login
             }
             finally
             {
-                LogUtil.Debug("SYSTEM", "=============================== IsAccountByIdPassAsync End ===============================");
+                LogUtil.Debug("SYSTEM", "=============================== IsAccountByIdPassAsync Service End ===============================");
             }
         }
     }

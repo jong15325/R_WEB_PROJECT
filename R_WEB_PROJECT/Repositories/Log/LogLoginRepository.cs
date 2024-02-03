@@ -38,7 +38,7 @@ namespace R_WEB_PROJECT.Repositories.Log
 
             try
             {
-                LogUtil.Debug("SYSTEM", "=============================== InsertLogLoginAsync Start ===============================");
+                LogUtil.Debug("SYSTEM", "=============================== InsertLogLoginAsync Repository Start ===============================");
 
                 int result = await _dbManager.ExecuteNonQueryAsync(query, parameters);
 
@@ -51,7 +51,7 @@ namespace R_WEB_PROJECT.Repositories.Log
             }
             finally
             {
-                LogUtil.Debug("SYSTEM", "=============================== InsertLogLoginAsync End ===============================");
+                LogUtil.Debug("SYSTEM", "=============================== InsertLogLoginAsync Repository End ===============================");
 
             }
         }

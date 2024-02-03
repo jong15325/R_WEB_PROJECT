@@ -24,7 +24,7 @@ namespace R_WEB_PROJECT.Services.Log
         {
             try
             {
-                LogUtil.Debug("SYSTEM", "=============================== InsertLogLoginAsync Start ===============================");
+                LogUtil.Debug("SYSTEM", "=============================== InsertLogLoginAsync Service Start ===============================");
 
                 string status = GetResultMessage(LoginResult.Success);
 
@@ -39,7 +39,7 @@ namespace R_WEB_PROJECT.Services.Log
             }
             finally
             {
-                LogUtil.Debug("SYSTEM", "=============================== InsertLogLoginAsync End ===============================");
+                LogUtil.Debug("SYSTEM", "=============================== InsertLogLoginAsync Service End ===============================");
 
             }
         }

@@ -28,7 +28,7 @@ namespace R_WEB_PROJECT.Repositories.Login
 
             try
             {
-                LogUtil.Debug("SYSTEM", "=============================== selectAccountByIdAsync Start ===============================");
+                LogUtil.Debug("SYSTEM", "=============================== selectAccountByIdAsync Repository Start ===============================");
 
                 AccountModel result = await _dbManager.GetSingleRecordAsync<AccountModel>(query, parameters);
 
@@ -41,7 +41,7 @@ namespace R_WEB_PROJECT.Repositories.Login
             }
             finally
             {
-                LogUtil.Debug("SYSTEM", "=============================== selectAccountByIdAsync End ===============================");
+                LogUtil.Debug("SYSTEM", "=============================== selectAccountByIdAsync Repository End ===============================");
 
             }
         }
