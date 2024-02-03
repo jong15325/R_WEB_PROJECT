@@ -1,0 +1,62 @@
+﻿using JWTAuthAPI.Utilities.Log;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+
+namespace JWTAuthAPI.Services
+{
+    public class JWTAuthService
+    {
+        internal object GenerateToken(string userId, string role)
+        {
+            throw new NotImplementedException();
+        }
+
+        public class JwtAuthService
+        {
+            private readonly IConfiguration _configuration;
+
+            public JwtAuthService(IConfiguration configuration)
+            {
+                _configuration = configuration;
+            }
+
+            public string GenerateToken(string userId, string role)
+            {
+                try
+                {
+                    LogUtil.Debug("API-JWT_AUTH", "=============================== GenerateToken Start ===============================");
+
+                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+                    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                    var token = new JwtSecurityToken(
+                        issuer: _configuration["Jwt:Issuer"],
+                        audience: _configuration["Jwt:Audience"],
+                        claims: new[]
+                        {
+                        new Claim(ClaimTypes.NameIdentifier, userId),
+                        new Claim(ClaimTypes.Role, role)
+                        },
+                        expires: DateTime.UtcNow.AddMinutes(int.Parse(_configuration["Jwt:ExpirationMinutes"])),
+                        signingCredentials: creds
+                    );
+
+                    return new JwtSecurityTokenHandler().WriteToken(token);
+                }
+                catch (Exception ex)
+                {
+                    LogUtil.Error("API-JWT_AUTH", $"An error occurred during GenerateToken Service: {ex.GetType().Name} - {ex.Message}", ex);
+                    throw;
+                }
+                finally
+                {
+                    LogUtil.Debug("API-JWT_AUTH", "=============================== GenerateToken End ===============================");
+
+                }
+            }
+        }
+    }
+}

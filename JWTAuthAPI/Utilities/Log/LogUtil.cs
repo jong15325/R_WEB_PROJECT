@@ -1,7 +1,7 @@
 ﻿using log4net;
 using System.Text;
 
-namespace R_WEB_PROJECT.Utilities.Log
+namespace JWTAuthAPI.Utilities.Log
 {
 	public static class LogUtil
 	{
