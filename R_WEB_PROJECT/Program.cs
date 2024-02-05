@@ -8,6 +8,10 @@ using R_WEB_PROJECT.Utilities.Log;
 using Microsoft.AspNetCore.Mvc.Razor;
 using R_WEB_PROJECT.Resources;
 using R_WEB_PROJECT.Modules.Manager;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using JWTAuthAPI.Models.User;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -63,6 +67,29 @@ LogUtil.Info("SYSTEM", $"RedisSessionModule registered", "Program");
 ManagerModule.Register(builder.Services);
 LogUtil.Info("SYSTEM", $"ManagerModule registered", "Program");
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = true; // https : true
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = configuration["Jwt:Issuer"],
+        ValidAudience = configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"])),
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
+builder.Services.AddAuthorization(config =>
+{
+    config.AddPolicy(UserRolePolicies.Admin, UserRolePolicies.AdminPolicy());
+    config.AddPolicy(UserRolePolicies.User, UserRolePolicies.UserPolicy());
+});
+
 //공통 리소스 등록
 //builder.Services.AddLocalization(options => options.ResourcesPath = "Resources"); -> 리소스 폴더가 상위라서 적용하면 안댐
 builder.Services.AddMvc().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization(options =>
@@ -112,5 +139,11 @@ LogUtil.Info("SYSTEM", $"Razor pages mapped.", "Program");
 
 app.UseSession(); // 세션 미들웨어 추가
 LogUtil.Info("SYSTEM", $"UseSession enabled.", "Program");
+
+app.UseAuthorization();
+LogUtil.Info("SYSTEM", $"UseAuthorization enabled.", "Program");
+
+app.UseAuthentication();
+LogUtil.Info("SYSTEM", $"UseAuthentication enabled.", "Program");
 
 app.Run();

@@ -2,7 +2,6 @@
 using JWTAuthAPI.Utilities.Log;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using JWTAuthAPI.Models.User;
 
 namespace JWTAuthAPI.Controllers

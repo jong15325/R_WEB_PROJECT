@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using JWTAuthAPI.Models.User;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using R_WEB_PROJECT.Controllers.Main;
 using R_WEB_PROJECT.DTOs;
 using R_WEB_PROJECT.Models.Log;
@@ -66,7 +68,8 @@ namespace R_WEB_PROJECT.Controllers.Login
 		//로그인 프로세스
         [Route("/login/loginAction")]
         [HttpPost] // POST 메서드를 통해 폼 데이터를 처리
-		[ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
 		public async Task<IActionResult> LoginAction(AccountModel model)
         {
             ResultData resultData = new ResultData(AlertType.BASIC, AlertIconType.SUCCESS, "", "", 0);
@@ -95,7 +98,6 @@ namespace R_WEB_PROJECT.Controllers.Login
                         //JWTAuthAPI 호출 토큰 생성 및 반환
                         // 로그인 검증
                         var token = await _jwtAuthService.AuthenticateUserAsync(account);
-                        LogUtil.Info("SYSTEM", $"JWTAuthAPI 인증 토큰 생성 완료");
 
                         if (string.IsNullOrEmpty(token))
                         {
@@ -108,13 +110,14 @@ namespace R_WEB_PROJECT.Controllers.Login
                         try
                         {
                             //레디스 세션 저장
-                            await _redisSessionStore.SetRedisAsync($"userSession:{account.AccountInfo.Idx}", new AccountModel
+                            await _redisSessionStore.SetRedisAsync($"userSession:{account.AccountInfo.Idx}", new RedisSessionData
                             {
                                 Idx = account.AccountInfo.Idx,
                                 UserId = account.AccountInfo.UserId,
                                 UserType = account.AccountInfo.UserType,
                                 UserName = account.AccountInfo.UserName,
-                                UserRoleCd = account.AccountInfo.UserRoleCd
+                                UserRoleCd = account.AccountInfo.UserRoleCd,
+                                UserToken = token
 
                             }, TimeSpan.FromMinutes(30));
                         }
@@ -179,6 +182,7 @@ namespace R_WEB_PROJECT.Controllers.Login
 
         //로그인 메인 페이지
         [Route("/login/register")]
+        [Authorize(Roles = UserRolePolicies.UserPolicy)]
         public IActionResult Register()
         {
             try

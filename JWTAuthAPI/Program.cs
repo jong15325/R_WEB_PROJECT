@@ -14,9 +14,6 @@ GlobalContext.Properties["ServerType"] = serverType;
 LogUtil.Info("SYSTEM", $"Server Type: {serverType}", "Program");
 
 //로그
-//Add log4net as logging provider
-//logger.Info, Debug, Warn, Error, Fatal
-//{0} : 첫번째 매개변수,$ 포함한 {count} 변수 count
 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
 //XmlConfigurator.Configure(logRepository, new FileInfo(serverType == "real" ? "log4net_real.config" : "log4net_dev.config"));
@@ -29,29 +26,29 @@ LogUtil.Info("SYSTEM", "Logger registered", "Program");
 ServiceModule.Register(builder.Services);
 LogUtil.Info("SYSTEM", $"ServiceModule registered", "Program");
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+/*builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+    options.RequireHttpsMetadata = true; // https : true
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateActor = true,
+        ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration[configuration["Jwt:Issuer"]],
-        ValidAudience = builder.Configuration[configuration["Jwt:Audience"]],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"]))
+        ValidIssuer = configuration["Jwt:Issuer"],
+        ValidAudience = configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"])),
+        ClockSkew = TimeSpan.Zero
     };
-});
-builder.Services.AddAuthorization();
+});*/
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -60,10 +57,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseAuthentication();
 
 app.Run();

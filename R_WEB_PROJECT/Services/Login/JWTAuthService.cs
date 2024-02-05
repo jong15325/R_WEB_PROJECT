@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text;
 using R_WEB_PROJECT.Utilities.Log;
 using R_WEB_PROJECT.DTOs;
+using System.Text.Json.Nodes;
 
 namespace R_WEB_PROJECT.Services.Login
 {
@@ -34,7 +35,11 @@ namespace R_WEB_PROJECT.Services.Login
                 var response = await client.PostAsync("https://localhost:7077/api/login", content);
                 response.EnsureSuccessStatusCode();
 
-                var token = await response.Content.ReadAsStringAsync();
+                var responseJson = await response.Content.ReadAsStringAsync();
+
+                var responseObject = JsonSerializer.Deserialize<JsonObject>(responseJson);
+                var token = responseObject["token"].ToString();
+
                 LogUtil.Debug("SYSTEM", $"JWT 인증 토큰3 : " + token);
 
                 return token;
