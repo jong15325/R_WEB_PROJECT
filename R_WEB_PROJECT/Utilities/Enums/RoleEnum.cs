@@ -6,14 +6,16 @@ namespace R_WEB_PROJECT.Utilities.Enums
     {
         public enum UserRole
         {
-            [Description("ADMIN")]
+            [Description("ROLE_AD")]
             ADMIN,
 
-            [Description("USER")]
+            [Description("ROLE_US")]
             USER,
 
-            [Description("GUEST")]
-            GUEST
+            [Description("ROLE_GU")]
+            GUEST,
+            
+            
         }
     }
 }

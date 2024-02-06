@@ -2,7 +2,7 @@
 
 namespace R_WEB_PROJECT.DTOs
 {
-    public class ResultData
+    public class ResultDTO
     {
         public AlertEnum.AlertType AlertType { get; set; }
 
@@ -14,7 +14,7 @@ namespace R_WEB_PROJECT.DTOs
 
         public int StatusCode { get; set; }
 
-        public ResultData(AlertEnum.AlertType alertType, AlertEnum.AlertIconType alertIconType, string title, string message, int statusCode)
+        public ResultDTO(AlertEnum.AlertType alertType, AlertEnum.AlertIconType alertIconType, string title, string message, int statusCode)
         {
             AlertType = alertType;
             AlertIconType = alertIconType;

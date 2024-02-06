@@ -21,7 +21,7 @@ namespace JWTAuthAPI.Services
             _configuration = configuration;
         }
 
-        public string GenerateToken(string userId, string role)
+        public string GenerateToken(string UserId, string UserRoleCd)
         {
             try
             {
@@ -30,14 +30,17 @@ namespace JWTAuthAPI.Services
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+                var claims = new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, UserId),
+                    new Claim(ClaimTypes.Role, UserRoleCd)
+
+                };
+
                 var token = new JwtSecurityToken(
                     issuer: _configuration["Jwt:Issuer"],
                     audience: _configuration["Jwt:Audience"],
-                    claims: new[]
-                    {
-                        new Claim(ClaimTypes.NameIdentifier, userId),
-                        new Claim(ClaimTypes.Role, role)
-                    },
+                    claims: claims,
                     expires: DateTime.UtcNow.AddMinutes(int.Parse(_configuration["Jwt:ExpirationMinutes"])),
                     signingCredentials: creds
                 );

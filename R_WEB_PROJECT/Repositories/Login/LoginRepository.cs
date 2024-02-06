@@ -25,7 +25,10 @@ namespace R_WEB_PROJECT.Repositories.Login
             {
                 LogUtil.Debug("SYSTEM", "=============================== selectAccountByIdAsync Repository Start ===============================");
 
-                const string query = "SELECT * FROM Account WHERE UserId = @UserId";
+                const string query = "SELECT A.*, R.RoleCd as UserRoleCd, R.RoleName as UserRoleName FROM Account A" +
+                    " LEFT JOIN UserRole UR ON A.idx = UR.UserIdx" +
+                    " LEFT JOIN ROLE R ON R.idx = UR.RoleIdx" +
+                    " WHERE UserId = @UserId";
 
                 object parameters = new { model.UserId };
                 LogUtil.Debug("SQL", SqlParamMapper.MapQuery(query, parameters));

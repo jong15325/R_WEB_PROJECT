@@ -40,12 +40,5 @@ namespace JWTAuthAPI.Controllers
                 LogUtil.Debug("API-JWT_AUTH", "=============================== Login End ===============================");
             }
         }
-
-        [Authorize(Roles = "Admin")] // 예시로 Admin 역할만 허용하는 엔드포인트
-        [HttpGet("admin")]
-        public IActionResult Admin()
-        {
-            return Ok("Hello Admin!");
-        }
     }
 }

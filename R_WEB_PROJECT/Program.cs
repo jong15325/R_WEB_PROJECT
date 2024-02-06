@@ -11,7 +11,6 @@ using R_WEB_PROJECT.Modules.Manager;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using JWTAuthAPI.Models.User;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -84,11 +83,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
-builder.Services.AddAuthorization(config =>
-{
-    config.AddPolicy(UserRolePolicies.Admin, UserRolePolicies.AdminPolicy());
-    config.AddPolicy(UserRolePolicies.User, UserRolePolicies.UserPolicy());
-});
+builder.Services.AddAuthorization();
 
 //공통 리소스 등록
 //builder.Services.AddLocalization(options => options.ResourcesPath = "Resources"); -> 리소스 폴더가 상위라서 적용하면 안댐

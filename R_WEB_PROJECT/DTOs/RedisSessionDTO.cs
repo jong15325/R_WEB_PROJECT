@@ -1,6 +1,6 @@
 ﻿namespace R_WEB_PROJECT.DTOs
 {
-    public class RedisSessionData
+    public class RedisSessionDTO
     {
         public int Idx { get; set; }
 

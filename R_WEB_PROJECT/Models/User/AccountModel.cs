@@ -45,6 +45,10 @@ namespace R_WEB_PROJECT.Models.User
         public string UserRoleCd { get; set; }
 
         [Required]
+        [StringLength(20)]
+        public string UserRoleName { get; set; }
+
+        [Required]
         public DateTime? UserCreateAt { get; set; }
 
         public DateTime? UserUpdateAt { get; set; }
@@ -55,7 +59,7 @@ namespace R_WEB_PROJECT.Models.User
 
         public override string ToString()
         {
-            return $"Idx[{Idx}], UserId[{UserId}], UserName[{UserName}], UserRoleCd[{UserRoleCd}], UserCreateAt[{UserCreateAt}]," +
+            return $"Idx[{Idx}], UserId[{UserId}], UserName[{UserName}], UserRoleCd[{UserRoleCd}], UserRoleName[{UserRoleName}], UserCreateAt[{UserCreateAt}]," +
                 $"UserUpdateAt[{UserUpdateAt}], UserDeleteAt[{UserDeleteAt}], UserLockAt[{UserLockAt}]";
         }
     }
