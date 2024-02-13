@@ -4,6 +4,10 @@ using System.Text;
 using R_WEB_PROJECT.Utilities.Log;
 using R_WEB_PROJECT.DTOs;
 using System.Text.Json.Nodes;
+using Microsoft.IdentityModel.Tokens;
+using static R_WEB_PROJECT.Utilities.Enums.RoleEnum;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace R_WEB_PROJECT.Services.Login
 {
@@ -27,18 +31,25 @@ namespace R_WEB_PROJECT.Services.Login
             {
                 LogUtil.Debug("SYSTEM", "=============================== AuthenticateUserAsync Service Start ===============================");
 
-                var client = new HttpClient();
-                var json = JsonSerializer.Serialize(dto.AccountInfo);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-                // JWTAuthAPI 호출
-                var response = await client.PostAsync("https://localhost:7077/api/login", content);
-                response.EnsureSuccessStatusCode();
+                var claims = new[]
+                {
+                     new Claim(ClaimTypes.NameIdentifier, UserId),
+                     new Claim(ClaimTypes.Role, UserRoleCd)
 
-                var responseJson = await response.Content.ReadAsStringAsync();
+                 };
 
-                var responseObject = JsonSerializer.Deserialize<JsonObject>(responseJson);
-                var token = responseObject["token"].ToString();
+                var token = new JwtSecurityToken(
+                    issuer: _configuration["Jwt:Issuer"],
+                    audience: _configuration["Jwt:Audience"],
+                    claims: claims,
+                    expires: DateTime.UtcNow.AddMinutes(int.Parse(_configuration["Jwt:ExpirationMinutes"])),
+                    signingCredentials: creds
+                );
+
+                return new JwtSecurityTokenHandler().WriteToken(token);
 
                 LogUtil.Debug("SYSTEM", $"JWT 인증 토큰3 : " + token);
 
